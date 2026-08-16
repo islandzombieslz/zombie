@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Coroadinho Zumbi Online — v11</title>
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+  <script src="vendor/firebase-app-compat-10.12.5.js"></script>
+  <script src="vendor/firebase-auth-compat-10.12.5.js"></script>
+  <script src="vendor/firebase-database-compat-10.12.5.js"></script>
   <style>
     :root{--bg:#0d130f;--panel:rgba(19,29,22,.95);--panel2:rgba(28,42,31,.96);--text:#f3f7f4;--muted:#9fb0a3;--green:#49b86b;--green2:#78d792;--red:#ef5a5a;--gold:#e2b04d;--line:rgba(255,255,255,.12);--shadow:0 22px 60px rgba(0,0,0,.42)}
     *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}button,input,select{font:inherit}.hidden{display:none!important}button{border:0;cursor:pointer;color:white;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
@@ -156,7 +156,7 @@
     #loadingScreen .asset-progress-fill{background:#fff}
 
     #homeScreen{position:relative;padding:18px;overflow:hidden;background:#000}
-    #homeScreen:before{content:"";position:absolute;inset:0;background:url("https://i.postimg.cc/nrrYmFN2/eb6dba4c-a1e6-4b03-8f4b-a85b5d48b034.png") center/cover no-repeat;z-index:0}
+    #homeScreen:before{content:"";position:absolute;inset:0;background:url("assets/7def2c21dd-eb6dba4c-a1e6-4b03-8f4b-a85b5d48b034.png") center/cover no-repeat;z-index:0}
     #homeScreen:after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.08);z-index:0}
     .home-topbar{position:absolute;top:16px;right:16px;z-index:3}
     .home-settings-btn{width:48px;height:48px;border-radius:14px;padding:0;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.96);color:#111;box-shadow:0 12px 28px rgba(0,0,0,.28);font-size:24px;display:grid;place-items:center}
@@ -316,7 +316,7 @@
 <img id="wallUpgradeIconSource" alt="" aria-hidden="true" style="position:fixed;left:-9999px;top:-9999px;width:48px;height:auto;opacity:0;pointer-events:none;user-select:none;" />
 <img id="skinShopTriggerSource" alt="" aria-hidden="true" style="position:fixed;left:-9999px;top:-9999px;width:96px;height:auto;opacity:0;pointer-events:none;user-select:none;" />
 <section id="loadingScreen" class="screen"><div class="loading-card"><div id="loadingPercent" class="loading-percent">0%</div><div class="asset-progress-track"><div id="loadingBar" class="asset-progress-fill"></div></div><div id="loadingDetail" class="asset-loading-detail hidden" aria-hidden="true">Carregando recursos…</div><button id="loadingRetryBtn" class="btn secondary asset-retry-btn hidden">Tentar novamente</button></div></section>
-<section id="homeScreen" class="screen hidden"><img id="homeWallpaperPreload" data-asset-src="https://i.postimg.cc/nrrYmFN2/eb6dba4c-a1e6-4b03-8f4b-a85b5d48b034.png" alt="" aria-hidden="true" style="position:fixed;left:-9999px;top:-9999px;width:32px;height:32px;opacity:0;pointer-events:none;user-select:none;" /><div class="home-topbar"><button id="homeSettingsBtn" class="home-settings-btn" aria-label="Abrir configurações" aria-expanded="false" title="Configurações">⚙</button><div id="homeSettingsPanel" class="home-settings-panel hidden"><h3>Configurações</h3><div class="home-settings-section"><div id="loginArea"><button id="googleLoginBtn" class="btn">Entrar com Google</button><button id="guestLoginBtn" class="btn secondary" style="margin-top:8px">Entrar como convidado</button><p class="small" style="margin:2px 0 0">Use Google ou convidado para entrar no jogo.</p></div><div id="loggedArea" class="hidden"><div class="field"><label>Nome do jogador</label><input id="playerName" class="input" maxlength="16" placeholder="Seu nome" /></div><button id="logoutBtn" class="btn secondary">Sair da conta</button></div><div id="statusBox" class="home-settings-status">Conectando ao Firebase…</div><div id="homeAssetStatus" class="asset-status-inline hidden"><div class="asset-status-head"><span id="homeAssetText">Preparando recursos da tela inicial…</span><span id="homeAssetPercent">50%</span></div><div class="asset-progress-track"><div id="homeAssetBar" class="asset-progress-fill" style="width:50%"></div></div><button id="homeAssetRetryBtn" class="btn secondary asset-retry-btn hidden">Tentar novamente</button></div></div></div></div><div class="home-menu-shell"><div class="home-menu-buttons"><button id="createRoomBtn" class="menu-sprite-btn" aria-label="Criar partida"><img data-asset-src="https://i.postimg.cc/zXLFXfnS/9c11cc73-d808-4612-a4e3-eddf3f343e15.png" alt="" aria-hidden="true" draggable="false" /></button><button id="showJoinBtn" class="menu-sprite-btn" aria-label="Usar código"><img data-asset-src="https://i.postimg.cc/d33mCsg3/68df9b88-d259-4bd9-8587-7a5fa110464c.png" alt="" aria-hidden="true" draggable="false" /></button></div><div id="joinArea" class="join-code-panel hidden"><label for="roomCodeInput">Código da sala</label><input id="roomCodeInput" class="input" maxlength="3" placeholder="Z7K" /><button id="joinRoomBtn" class="btn">Entrar</button></div></div></section>
+<section id="homeScreen" class="screen hidden"><img id="homeWallpaperPreload" data-asset-src="assets/7def2c21dd-eb6dba4c-a1e6-4b03-8f4b-a85b5d48b034.png" alt="" aria-hidden="true" style="position:fixed;left:-9999px;top:-9999px;width:32px;height:32px;opacity:0;pointer-events:none;user-select:none;" /><div class="home-topbar"><button id="homeSettingsBtn" class="home-settings-btn" aria-label="Abrir configurações" aria-expanded="false" title="Configurações">⚙</button><div id="homeSettingsPanel" class="home-settings-panel hidden"><h3>Configurações</h3><div class="home-settings-section"><div id="loginArea"><button id="googleLoginBtn" class="btn">Entrar com Google</button><button id="guestLoginBtn" class="btn secondary" style="margin-top:8px">Entrar como convidado</button><p class="small" style="margin:2px 0 0">Use Google ou convidado para entrar no jogo.</p></div><div id="loggedArea" class="hidden"><div class="field"><label>Nome do jogador</label><input id="playerName" class="input" maxlength="16" placeholder="Seu nome" /></div><button id="logoutBtn" class="btn secondary">Sair da conta</button></div><div id="statusBox" class="home-settings-status">Conectando ao Firebase…</div><div id="homeAssetStatus" class="asset-status-inline hidden"><div class="asset-status-head"><span id="homeAssetText">Preparando recursos da tela inicial…</span><span id="homeAssetPercent">50%</span></div><div class="asset-progress-track"><div id="homeAssetBar" class="asset-progress-fill" style="width:50%"></div></div><button id="homeAssetRetryBtn" class="btn secondary asset-retry-btn hidden">Tentar novamente</button></div></div></div></div><div class="home-menu-shell"><div class="home-menu-buttons"><button id="createRoomBtn" class="menu-sprite-btn" aria-label="Criar partida"><img data-asset-src="assets/eec9285249-9c11cc73-d808-4612-a4e3-eddf3f343e15.png" alt="" aria-hidden="true" draggable="false" /></button><button id="showJoinBtn" class="menu-sprite-btn" aria-label="Usar código"><img data-asset-src="assets/3ff8dd2e0c-68df9b88-d259-4bd9-8587-7a5fa110464c.png" alt="" aria-hidden="true" draggable="false" /></button></div><div id="joinArea" class="join-code-panel hidden"><label for="roomCodeInput">Código da sala</label><input id="roomCodeInput" class="input" maxlength="3" placeholder="Z7K" /><button id="joinRoomBtn" class="btn">Entrar</button></div></div></section>
 
 <section id="lobbyScreen" class="screen hidden">
   <img id="lobbyBackgroundSource" alt="" aria-hidden="true" style="display:none" />
@@ -373,9 +373,9 @@
 </section>
 
 <section id="gameScreen" class="screen hidden"><canvas id="gameCanvas"></canvas><div class="hud"><div class="hud-primary"><div class="hud-card"><b id="phaseLabel">DIA</b><div id="timerLabel" class="small">02:00</div></div><div class="hud-card">Vida<div class="bar"><div id="healthBar"></div></div></div><div id="vehicleHealthCard" class="hud-card vehicle-card hidden">Carro <span id="vehicleHealthText" class="small">200/200</span><div class="bar vehicle-health-bar"><div id="vehicleHealthBar"></div></div></div></div><div class="hud-right"><div class="game-settings-wrap"><button id="gameSettingsBtn" class="game-settings-toggle" aria-label="Abrir configurações da partida" title="Configurações">⚙</button><div id="gameSettingsPanel" class="game-settings-panel hidden"><button id="leaveGameBtn" class="btn danger">Sair da partida</button></div></div><div class="game-status-row"><div class="hud-card"><b id="aliveCountLabel">0 vivos</b><div class="small" id="zombieCountLabel">0 zumbis</div></div><button id="gameVoiceBtn" class="voice-toggle" type="button" aria-label="Ativar microfone" aria-pressed="false" title="Ativar microfone"><span aria-hidden="true">🎙️</span><i class="voice-dot" aria-hidden="true"></i></button><button id="gameChatBtn" class="game-chat-toggle" type="button" aria-label="Abrir conversa" title="Conversar"><span aria-hidden="true">💬</span></button></div></div></div><form id="gameChatComposer" class="game-chat-composer hidden" autocomplete="off"><input id="gameChatInput" class="game-chat-input" maxlength="90" placeholder="Digite sua mensagem…" aria-label="Mensagem da partida" enterkeyhint="send" /><button id="gameChatSendBtn" class="game-chat-send" type="submit">Enviar</button><div id="gameChatRateNote" class="game-chat-rate-note" aria-live="polite"></div></form>
-  <div id="joystick" class="joystick"><div id="stick" class="stick"></div></div><div class="game-actions"><button id="interactBtn" class="btn hidden">Interagir</button><button id="attackBtn" class="attack-btn hidden" aria-label="Atacar com machado" title="Atacar"><img data-asset-src="https://i.postimg.cc/h45pRw4v/botao-ataque.png?v=20260805-v29" alt="" aria-hidden="true" draggable="false" /><span class="attack-button-label">Atacar</span></button><button id="buildBtn" class="btn gold build-sprite-btn" aria-label="Construir" title="Construir"><img data-asset-src="https://i.postimg.cc/9FjsrpnR/VIK3Uv-L.png?v=20260804-v26" alt="" aria-hidden="true" draggable="false" /><span class="build-button-label">Construir</span></button><button id="rotateBuildBtn" class="btn secondary hidden">Girar: horizontal</button></div><div id="weaponHud" class="weapon-hud"><div class="weapon-slots"><button class="weapon-slot locked unowned" data-weapon="axe" data-slot="1" aria-label="Slot 1 vazio"><span class="weapon-slot-number">1</span><img data-asset-src="https://i.postimg.cc/G3Gr99qc/b6bbf502-ca42-4137-a4dd-e52c35281798.png?v=20260804-v28" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button><button class="weapon-slot locked unowned" data-weapon="syringe" data-slot="2" aria-label="Slot 2 vazio"><span class="weapon-slot-number">2</span><img data-asset-src="https://i.postimg.cc/jjZZWtm2/7f1fea02-5950-45b5-91c3-db2fe5ece47b.png?v=20260805-v31" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button><button class="weapon-slot locked unowned" data-weapon="ak" data-slot="3" aria-label="Slot 3 vazio"><span class="weapon-slot-number">3</span><img data-asset-src="https://i.postimg.cc/FzNDG3wT/7638f1e6-a1cc-4fcc-b8b3-d0d898698c48.png?v=20260812-v44" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button><button class="weapon-slot special-slot hidden locked unowned" data-weapon="katana" data-slot="4" aria-label="Slot 4 vazio"><span class="weapon-slot-number">4</span><img data-asset-src="https://i.postimg.cc/Z5hJkkd9/katana-cartoon-transparente.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button></div></div><div id="buildPicker" class="build-picker hidden"><div class="build-picker-head"><div class="build-picker-title">Escolha a construção</div><button id="closeBuildPickerBtn" class="btn secondary build-picker-close" aria-label="Fechar">×</button></div><div class="build-options"><button class="build-option" data-build="wall">Parede</button><button class="build-option" data-build="door">Porta na parede</button><button class="build-option" data-build="squareSmall">Quadrada pequena</button><button class="build-option" data-build="square">Quadrada grande</button><button class="build-option" data-build="rectangleSmall">Retangular pequena</button><button class="build-option" data-build="rectangle">Retangular grande</button></div></div></section>
+  <div id="joystick" class="joystick"><div id="stick" class="stick"></div></div><div class="game-actions"><button id="interactBtn" class="btn hidden">Interagir</button><button id="attackBtn" class="attack-btn hidden" aria-label="Atacar com machado" title="Atacar"><img data-asset-src="assets/5c9a9d6c5a-botao-ataque.png" alt="" aria-hidden="true" draggable="false" /><span class="attack-button-label">Atacar</span></button><button id="buildBtn" class="btn gold build-sprite-btn" aria-label="Construir" title="Construir"><img data-asset-src="assets/acaeb9de7a-VIK3Uv-L.png" alt="" aria-hidden="true" draggable="false" /><span class="build-button-label">Construir</span></button><button id="rotateBuildBtn" class="btn secondary hidden">Girar: horizontal</button></div><div id="weaponHud" class="weapon-hud"><div class="weapon-slots"><button class="weapon-slot locked unowned" data-weapon="axe" data-slot="1" aria-label="Slot 1 vazio"><span class="weapon-slot-number">1</span><img data-asset-src="assets/41452782b8-b6bbf502-ca42-4137-a4dd-e52c35281798.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button><button class="weapon-slot locked unowned" data-weapon="syringe" data-slot="2" aria-label="Slot 2 vazio"><span class="weapon-slot-number">2</span><img data-asset-src="assets/1607473511-7f1fea02-5950-45b5-91c3-db2fe5ece47b.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button><button class="weapon-slot locked unowned" data-weapon="ak" data-slot="3" aria-label="Slot 3 vazio"><span class="weapon-slot-number">3</span><img data-asset-src="assets/69483bebce-7638f1e6-a1cc-4fcc-b8b3-d0d898698c48.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button><button class="weapon-slot special-slot hidden locked unowned" data-weapon="katana" data-slot="4" aria-label="Slot 4 vazio"><span class="weapon-slot-number">4</span><img data-asset-src="assets/0a867a02dd-katana-cartoon-transparente.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button></div></div><div id="buildPicker" class="build-picker hidden"><div class="build-picker-head"><div class="build-picker-title">Escolha a construção</div><button id="closeBuildPickerBtn" class="btn secondary build-picker-close" aria-label="Fechar">×</button></div><div class="build-options"><button class="build-option" data-build="wall">Parede</button><button class="build-option" data-build="door">Porta na parede</button><button class="build-option" data-build="squareSmall">Quadrada pequena</button><button class="build-option" data-build="square">Quadrada grande</button><button class="build-option" data-build="rectangleSmall">Retangular pequena</button><button class="build-option" data-build="rectangle">Retangular grande</button></div></div></section>
 
-<div id="weaponWheel" class="weapon-wheel-overlay hidden"><div class="weapon-wheel-panel" role="dialog" aria-label="Roda de seleção de armas"><button class="weapon-wheel-choice slot-1 locked unowned" data-weapon="axe"><img data-asset-src="https://i.postimg.cc/G3Gr99qc/b6bbf502-ca42-4137-a4dd-e52c35281798.png?v=20260804-v28" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-choice-name">Slot 1 vazio</span></button><button class="weapon-wheel-choice slot-2 locked unowned" data-weapon="syringe"><img data-asset-src="https://i.postimg.cc/jjZZWtm2/7f1fea02-5950-45b5-91c3-db2fe5ece47b.png?v=20260805-v31" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-choice-name">Slot 2 vazio</span></button><button class="weapon-wheel-choice slot-3 locked unowned" data-weapon="ak"><img data-asset-src="https://i.postimg.cc/FzNDG3wT/7638f1e6-a1cc-4fcc-b8b3-d0d898698c48.png?v=20260812-v44" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-choice-name">Slot 3 vazio</span></button><button class="weapon-wheel-choice special-slot slot-4 hidden locked unowned" data-weapon="katana"><img data-asset-src="https://i.postimg.cc/Z5hJkkd9/katana-cartoon-transparente.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-choice-name">Slot 4 vazio</span></button><button id="unarmedWeaponChoice" class="weapon-wheel-center selected" data-weapon="none"><span>GUARDAR</span><strong id="weaponWheelName">SEM ARMA</strong><small>andar sem item</small></button></div></div>
+<div id="weaponWheel" class="weapon-wheel-overlay hidden"><div class="weapon-wheel-panel" role="dialog" aria-label="Roda de seleção de armas"><button class="weapon-wheel-choice slot-1 locked unowned" data-weapon="axe"><img data-asset-src="assets/41452782b8-b6bbf502-ca42-4137-a4dd-e52c35281798.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-choice-name">Slot 1 vazio</span></button><button class="weapon-wheel-choice slot-2 locked unowned" data-weapon="syringe"><img data-asset-src="assets/1607473511-7f1fea02-5950-45b5-91c3-db2fe5ece47b.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-choice-name">Slot 2 vazio</span></button><button class="weapon-wheel-choice slot-3 locked unowned" data-weapon="ak"><img data-asset-src="assets/69483bebce-7638f1e6-a1cc-4fcc-b8b3-d0d898698c48.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-choice-name">Slot 3 vazio</span></button><button class="weapon-wheel-choice special-slot slot-4 hidden locked unowned" data-weapon="katana"><img data-asset-src="assets/0a867a02dd-katana-cartoon-transparente.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-choice-name">Slot 4 vazio</span></button><button id="unarmedWeaponChoice" class="weapon-wheel-center selected" data-weapon="none"><span>GUARDAR</span><strong id="weaponWheelName">SEM ARMA</strong><small>andar sem item</small></button></div></div>
 <div id="inventoryOverlay" class="overlay hidden"><div class="overlay-card"><div style="display:flex;justify-content:space-between;align-items:center"><h2>Inventário</h2><button id="closeInventoryBtn" class="btn secondary">Fechar</button></div><div id="inventoryGrid" class="inventory-grid"></div><div class="notice"><b>Paredes:</b><br>Nível 1: 8 madeiras · 160 resistência.<br>Nível 2: +12 madeiras e 8 pedras · 300 resistência.<br>Nível 3: +10 madeiras, 14 pedras e 3 ferros · 520 resistência.<br>Nível 4: +18 pedras e 10 ferros · 850 resistência.<br><br>Fortalezas prontas usam várias paredes de nível 1 e cobram cada segmento individualmente.</div></div></div>
 <div id="resultOverlay" class="overlay hidden"><div class="overlay-card"><div id="resultTitle" class="result-title">AMANHECEU!</div><p id="resultText" style="text-align:center;color:var(--muted);font-size:17px"></p><button id="backLobbyBtn" class="btn" style="width:100%">Voltar ao lobby</button></div></div>
 
@@ -412,84 +412,84 @@ FIREBASE
 const firebaseConfig={apiKey:"AIzaSyDPywDQKTGMJrC3drm0FlZ1yvSe5XwjDI0",authDomain:"coroadinho-6bd3b.firebaseapp.com",databaseURL:"https://coroadinho-6bd3b-default-rtdb.firebaseio.com/",projectId:"coroadinho-6bd3b",storageBucket:"coroadinho-6bd3b.firebasestorage.app",messagingSenderId:"1065241425890",appId:"1:1065241425890:web:7556518b26fd499167abbb"};
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.database(),ROOT="zombieGame";const $=id=>document.getElementById(id);
 const screens={loading:$("loadingScreen"),home:$("homeScreen"),lobby:$("lobbyScreen"),game:$("gameScreen")};
-const PLAYER_SPRITE_URL="https://i.postimg.cc/XYcPDZjM/20260731-202804.gif";
-const IDLE_PLAYER_SPRITE_URL="https://i.postimg.cc/dtX1N8P9/20260801-225018.gif";
-const AXE_IDLE_PLAYER_SPRITE_URL="https://i.postimg.cc/x8c0FPLb/20260804-230330.gif";
-const AXE_WALK_PLAYER_SPRITE_URL="https://i.postimg.cc/3NdKbZ2d/20260804-230407.gif";
-const AXE_ATTACK_PLAYER_SPRITE_URL="https://i.postimg.cc/D082Yc1G/20260804-230514.gif";
-const AXE_PICKUP_SPRITE_URL="https://i.postimg.cc/G3Gr99qc/b6bbf502-ca42-4137-a4dd-e52c35281798.png";
-const AK_FIRE_PLAYER_SPRITE_URL="https://i.postimg.cc/s2H2YGgL/316769.gif";
-const AK_PICKUP_SPRITE_URL="https://i.postimg.cc/FzNDG3wT/7638f1e6-a1cc-4fcc-b8b3-d0d898698c48.png";
-const SYRINGE_CURE_PLAYER_SPRITE_URL="https://i.postimg.cc/HxNz23T3/20260805-135317.gif";
-const SYRINGE_PICKUP_SPRITE_URL="https://i.postimg.cc/jjZZWtm2/7f1fea02-5950-45b5-91c3-db2fe5ece47b.png";
-const ZOMBIE_TRANSFORM_SPRITE_URL="https://i.postimg.cc/N0pHXT3t/CKH3Rhg.gif";
-const ZOMBIE_IDLE_SPRITE_URL="https://i.postimg.cc/hGSmhM3f/WG1fz55.gif";
-const ZOMBIE_WALK_SPRITE_URL="https://i.postimg.cc/nzvWHDpT/izpj-Fcq.gif";
-const MAP_ZOMBIE_MOVE_SPRITE_URL="https://i.postimg.cc/3w7Pq1gs/sxi-Lp3E.gif";
-const MAP_ZOMBIE_ATTACK_SPRITE_URL="https://i.postimg.cc/W4jQy8M7/WKRz696.gif";
+const PLAYER_SPRITE_URL="assets/abbaec067a-20260731-202804.gif";
+const IDLE_PLAYER_SPRITE_URL="assets/858828b40e-20260801-225018.gif";
+const AXE_IDLE_PLAYER_SPRITE_URL="assets/bd0112230e-20260804-230330.gif";
+const AXE_WALK_PLAYER_SPRITE_URL="assets/8638e7f508-20260804-230407.gif";
+const AXE_ATTACK_PLAYER_SPRITE_URL="assets/2ee115439a-20260804-230514.gif";
+const AXE_PICKUP_SPRITE_URL="assets/41452782b8-b6bbf502-ca42-4137-a4dd-e52c35281798.png";
+const AK_FIRE_PLAYER_SPRITE_URL="assets/3009b2fcda-316769.gif";
+const AK_PICKUP_SPRITE_URL="assets/69483bebce-7638f1e6-a1cc-4fcc-b8b3-d0d898698c48.png";
+const SYRINGE_CURE_PLAYER_SPRITE_URL="assets/dc37648e62-20260805-135317.gif";
+const SYRINGE_PICKUP_SPRITE_URL="assets/1607473511-7f1fea02-5950-45b5-91c3-db2fe5ece47b.png";
+const ZOMBIE_TRANSFORM_SPRITE_URL="assets/43ff1ac3ab-CKH3Rhg.gif";
+const ZOMBIE_IDLE_SPRITE_URL="assets/809337fe74-WG1fz55.gif";
+const ZOMBIE_WALK_SPRITE_URL="assets/56806d09a9-izpj-Fcq.gif";
+const MAP_ZOMBIE_MOVE_SPRITE_URL="assets/cb16913aaa-sxi-Lp3E.gif";
+const MAP_ZOMBIE_ATTACK_SPRITE_URL="assets/cc9794dc6e-WKRz696.gif";
 const MAP_ZOMBIE_ATTACK_VISUAL_MS=900;
-const CAR_IDLE_SPRITE_URL="https://i.postimg.cc/j2xJCxMY/carro-parado-(1).png";
-const CAR_MOVE_SPRITE_URL="https://i.postimg.cc/fTHYtd4B/Pix-Verse-V6-Transition-540P-Animate-this-2D-ga-ezgif-com-remove-background.gif";
-const PICKUP_IDLE_SPRITE_URL="https://i.postimg.cc/sXZQs1rp/parado2.png";
-const PICKUP_MOVE_SPRITE_URL="https://i.postimg.cc/QtW9hV3b/VID-20260815-175232-175-bsl-ezgif-com-remove-background.gif";
-const MONSTER_IDLE_SPRITE_URL="https://i.postimg.cc/FRJdN140/parado.png";
-const MONSTER_MOVE_SPRITE_URL="https://i.postimg.cc/4dh7sng1/VID-20260815-175203-273-bsl-ezgif-com-remove-background.gif";
+const CAR_IDLE_SPRITE_URL="assets/342ad29baa-carro-parado-1-.png";
+const CAR_MOVE_SPRITE_URL="assets/153e087a84-Pix-Verse-V6-Transition-540P-Animate-this-2D-ga-ezgif-com-remove-background.gif";
+const PICKUP_IDLE_SPRITE_URL="assets/b894587ac7-parado2.png";
+const PICKUP_MOVE_SPRITE_URL="assets/24dd4f4eb2-VID-20260815-175232-175-bsl-ezgif-com-remove-background.gif";
+const MONSTER_IDLE_SPRITE_URL="assets/09f34404f0-parado.png";
+const MONSTER_MOVE_SPRITE_URL="assets/d928f4b84a-VID-20260815-175203-273-bsl-ezgif-com-remove-background.gif";
 const CAR_SPRITE_VERSION="20260805-v32";
-const LOBBY_BACKGROUND_URL="https://i.postimg.cc/bJ4j5dgr/e6927c26-7ef5-4214-b187-3e8a86db5142.png";
-const LOBBY_START_BUTTON_URL="https://i.postimg.cc/Y0gwBkDp/9de17ba2-7204-4a2f-b224-253261400d33.png";
-const SKIN_SHOP_TRIGGER_URL="https://i.postimg.cc/KjFH9qp0/pc-skins.png";
-const MALE_SKIN_SHOP_PREVIEW_URL="https://i.postimg.cc/rsP5dz4M/eb9a2caf-0c18-4813-9da8-8da903212e76.png";
-const FEMALE_SKIN_SHOP_PREVIEW_URL="https://i.postimg.cc/vTN51Dns/a596508a-65a0-4dab-9145-e69e10cf9988.png";
-const FEMALE_IDLE_PLAYER_SPRITE_URL="https://i.postimg.cc/L8BM2PL8/Pix-Verse-V6-Transition-540P-Animate-this-2D-fe-ezgif-com-remove-background.gif";
-const FEMALE_WALK_PLAYER_SPRITE_URL="https://i.postimg.cc/6pLNtZn4/ezgif-4da5392742ce43fa-ezgif-com-remove-background.gif";
-const FEMALE_AXE_IDLE_PLAYER_SPRITE_URL="https://i.postimg.cc/sg9RsW-7y/Pix-Verse-V6-Transition-540P-Animate-this-2D-fe1-ezgif-com-remove-background.gif";
-const FEMALE_AXE_ATTACK_PLAYER_SPRITE_URL="https://i.postimg.cc/JzWWfxyj/Pix-Verse-V6-Transition-540P-Animate-this-2D-fe2-ezgif-com-remove-background.gif";
-const FEMALE_AXE_WALK_PLAYER_SPRITE_URL="https://i.postimg.cc/htqqkszB/Pix-Verse-V6-Image-Text-540P-Animate-this-2D-fe-ezgif-com-remove-background.gif";
-const FEMALE_AK_FIRE_PLAYER_SPRITE_URL="https://i.postimg.cc/bJGw3YZT/316749.gif";
-const FEMALE_ZOMBIE_IDLE_SPRITE_URL="https://i.postimg.cc/P5kkgyLm/Pix-Verse-V6-Image-Text-540P-Animate-this-2D-fe2-ezgif-com-remove-background.gif";
-const FEMALE_ZOMBIE_WALK_SPRITE_URL="https://i.postimg.cc/jSrrpcWX/Pix-Verse-V6-Image-Text-540P-Animate-this-2D-fe3-ezgif-com-remove-background.gif";
-const FEMALE_ZOMBIE_TRANSFORM_SPRITE_URL="https://i.postimg.cc/FKwbpTs2/20260809-195946.gif";
-const FEMALE_SYRINGE_CURE_SPRITE_URL="https://i.postimg.cc/gkhWtQ04/Pix-Verse-V6-Transition-540P-Animate-the-female-ezgif-com-remove-background.gif";
-const SOLDIER_SKIN_SHOP_PREVIEW_URL="https://i.postimg.cc/mrNTrb2d/b4db1e44-b49f-4f8c-ab54-96db89d7f0ec.png";
-const SOLDIER_IDLE_PLAYER_SPRITE_URL="https://i.postimg.cc/d0Z2yxTd/Jv-Laq-QN.gif";
-const SOLDIER_WALK_PLAYER_SPRITE_URL="https://i.postimg.cc/2jdnfvDy/L43Jdru.gif";
-const SOLDIER_AXE_IDLE_PLAYER_SPRITE_URL="https://i.postimg.cc/mkBCKZpt/e-Qtm-Qq0.gif";
-const SOLDIER_AXE_WALK_PLAYER_SPRITE_URL="https://i.postimg.cc/xdNvz4b0/Hwoi-Qb-U.gif";
-const SOLDIER_AXE_ATTACK_PLAYER_SPRITE_URL="https://i.postimg.cc/c41fmHnG/Lvv-Yg-Ii.gif";
-const SOLDIER_AK_FIRE_PLAYER_SPRITE_URL="https://i.postimg.cc/RF3ZXC3C/316743.gif";
-const SOLDIER_ZOMBIE_IDLE_SPRITE_URL="https://i.postimg.cc/L6NfJp5Q/Yrl-RK3b.gif";
-const SOLDIER_ZOMBIE_WALK_SPRITE_URL="https://i.postimg.cc/mgJMBy6r/Gpygb-Y9.gif";
-const SOLDIER_ZOMBIE_TRANSFORM_SPRITE_URL="https://i.postimg.cc/B6x2hPpJ/f-Wum27V.gif";
-const SOLDIER_SYRINGE_CURE_SPRITE_URL="https://i.postimg.cc/HkNyt9Qv/9q-NBs-TJ.gif";
-const MICHONNE_SKIN_SHOP_PREVIEW_URL="https://i.postimg.cc/rmXbL6yL/ea600c58-3023-4728-be30-3f53c5e272c2.png";
-const MICHONNE_IDLE_PLAYER_SPRITE_URL="https://i.postimg.cc/sx9CLj5q/318650.gif";
-const MICHONNE_WALK_PLAYER_SPRITE_URL="https://i.postimg.cc/9fK2RNWn/318659.gif";
-const MICHONNE_AXE_IDLE_PLAYER_SPRITE_URL="https://i.postimg.cc/cCWVwpPJ/318663.gif";
-const MICHONNE_AXE_WALK_PLAYER_SPRITE_URL="https://i.postimg.cc/FK8vdn9C/318658.gif";
-const MICHONNE_AXE_ATTACK_PLAYER_SPRITE_URL="https://i.postimg.cc/bJyxnL3r/ezgif-1398f6deb225b177.gif";
-const MICHONNE_AK_FIRE_PLAYER_SPRITE_URL="https://i.postimg.cc/fWxsyK1w/318651.gif";
-const MICHONNE_ZOMBIE_IDLE_SPRITE_URL="https://i.postimg.cc/LsZ774pT/318700.gif";
-const MICHONNE_ZOMBIE_WALK_SPRITE_URL="https://i.postimg.cc/PrtgxkmK/318669.gif";
-const MICHONNE_ZOMBIE_TRANSFORM_SPRITE_URL="https://i.postimg.cc/DwYkHY4x/318660.gif";
-const MICHONNE_SYRINGE_CURE_SPRITE_URL="https://i.postimg.cc/3RYBB3rb/318701.gif";
-const MICHONNE_KATANA_IDLE_PLAYER_SPRITE_URL="https://i.postimg.cc/rwCMMh1r/318965-compressed.gif";
-const MICHONNE_KATANA_WALK_PLAYER_SPRITE_URL="https://i.postimg.cc/9fL2qrNW/318967-compressed.gif";
-const MICHONNE_KATANA_ATTACK_PLAYER_SPRITE_URL="https://i.postimg.cc/JzcMMTNj/318966-compressed.gif";
+const LOBBY_BACKGROUND_URL="assets/b9b8fafb36-e6927c26-7ef5-4214-b187-3e8a86db5142.png";
+const LOBBY_START_BUTTON_URL="assets/0cf31d346c-9de17ba2-7204-4a2f-b224-253261400d33.png";
+const SKIN_SHOP_TRIGGER_URL="assets/bf68071d0a-pc-skins.png";
+const MALE_SKIN_SHOP_PREVIEW_URL="assets/9b16265a29-eb9a2caf-0c18-4813-9da8-8da903212e76.png";
+const FEMALE_SKIN_SHOP_PREVIEW_URL="assets/ead13623e2-a596508a-65a0-4dab-9145-e69e10cf9988.png";
+const FEMALE_IDLE_PLAYER_SPRITE_URL="assets/53d81f4c13-Pix-Verse-V6-Transition-540P-Animate-this-2D-fe-ezgif-com-remove-background.gif";
+const FEMALE_WALK_PLAYER_SPRITE_URL="assets/d867011117-ezgif-4da5392742ce43fa-ezgif-com-remove-background.gif";
+const FEMALE_AXE_IDLE_PLAYER_SPRITE_URL="assets/9b7ab6dd21-Pix-Verse-V6-Transition-540P-Animate-this-2D-fe1-ezgif-com-remove-background.gif";
+const FEMALE_AXE_ATTACK_PLAYER_SPRITE_URL="assets/45299c4d9f-Pix-Verse-V6-Transition-540P-Animate-this-2D-fe2-ezgif-com-remove-background.gif";
+const FEMALE_AXE_WALK_PLAYER_SPRITE_URL="assets/53c9a7f905-Pix-Verse-V6-Image-Text-540P-Animate-this-2D-fe-ezgif-com-remove-background.gif";
+const FEMALE_AK_FIRE_PLAYER_SPRITE_URL="assets/c30c9cc90e-316749.gif";
+const FEMALE_ZOMBIE_IDLE_SPRITE_URL="assets/4eaddc753e-Pix-Verse-V6-Image-Text-540P-Animate-this-2D-fe2-ezgif-com-remove-background.gif";
+const FEMALE_ZOMBIE_WALK_SPRITE_URL="assets/32b4cdd6c1-Pix-Verse-V6-Image-Text-540P-Animate-this-2D-fe3-ezgif-com-remove-background.gif";
+const FEMALE_ZOMBIE_TRANSFORM_SPRITE_URL="assets/37e96028e5-20260809-195946.gif";
+const FEMALE_SYRINGE_CURE_SPRITE_URL="assets/01bdf460f9-Pix-Verse-V6-Transition-540P-Animate-the-female-ezgif-com-remove-background.gif";
+const SOLDIER_SKIN_SHOP_PREVIEW_URL="assets/2d5b43ce7f-b4db1e44-b49f-4f8c-ab54-96db89d7f0ec.png";
+const SOLDIER_IDLE_PLAYER_SPRITE_URL="assets/afc29576ae-Jv-Laq-QN.gif";
+const SOLDIER_WALK_PLAYER_SPRITE_URL="assets/fcbc0407ee-L43Jdru.gif";
+const SOLDIER_AXE_IDLE_PLAYER_SPRITE_URL="assets/1f55c424d4-e-Qtm-Qq0.gif";
+const SOLDIER_AXE_WALK_PLAYER_SPRITE_URL="assets/717f9fa2e7-Hwoi-Qb-U.gif";
+const SOLDIER_AXE_ATTACK_PLAYER_SPRITE_URL="assets/ea60582989-Lvv-Yg-Ii.gif";
+const SOLDIER_AK_FIRE_PLAYER_SPRITE_URL="assets/626a395a66-316743.gif";
+const SOLDIER_ZOMBIE_IDLE_SPRITE_URL="assets/a74bb760d2-Yrl-RK3b.gif";
+const SOLDIER_ZOMBIE_WALK_SPRITE_URL="assets/e7e6772d20-Gpygb-Y9.gif";
+const SOLDIER_ZOMBIE_TRANSFORM_SPRITE_URL="assets/74648f8386-f-Wum27V.gif";
+const SOLDIER_SYRINGE_CURE_SPRITE_URL="assets/d55b565d1d-9q-NBs-TJ.gif";
+const MICHONNE_SKIN_SHOP_PREVIEW_URL="assets/357bba8743-ea600c58-3023-4728-be30-3f53c5e272c2.png";
+const MICHONNE_IDLE_PLAYER_SPRITE_URL="assets/f0a568163d-318650.gif";
+const MICHONNE_WALK_PLAYER_SPRITE_URL="assets/4059b80c7b-318659.gif";
+const MICHONNE_AXE_IDLE_PLAYER_SPRITE_URL="assets/6f32303bb8-318663.gif";
+const MICHONNE_AXE_WALK_PLAYER_SPRITE_URL="assets/3c19289b0d-318658.gif";
+const MICHONNE_AXE_ATTACK_PLAYER_SPRITE_URL="assets/0a62a707d8-ezgif-1398f6deb225b177.gif";
+const MICHONNE_AK_FIRE_PLAYER_SPRITE_URL="assets/2b465a2a51-318651.gif";
+const MICHONNE_ZOMBIE_IDLE_SPRITE_URL="assets/7e50c09afd-318700.gif";
+const MICHONNE_ZOMBIE_WALK_SPRITE_URL="assets/5fd810fc26-318669.gif";
+const MICHONNE_ZOMBIE_TRANSFORM_SPRITE_URL="assets/6b2b26a76d-318660.gif";
+const MICHONNE_SYRINGE_CURE_SPRITE_URL="assets/23cfc54240-318701.gif";
+const MICHONNE_KATANA_IDLE_PLAYER_SPRITE_URL="assets/8d6296e08c-318965-compressed.gif";
+const MICHONNE_KATANA_WALK_PLAYER_SPRITE_URL="assets/884bd17a05-318967-compressed.gif";
+const MICHONNE_KATANA_ATTACK_PLAYER_SPRITE_URL="assets/2ee09cc437-318966-compressed.gif";
 const LOBBY_ASSET_VERSION="20260812-v44-ak";
 const RESOURCE_SPRITE_URLS={
-  wood:"https://i.postimg.cc/fTjpX9G3/6uveh-G3.png",
-  stone:"https://i.postimg.cc/4Nbqt9Df/ot-Lc4Af.png",
-  metal:"https://i.postimg.cc/3JCVpvsk/ms-S0Zjm.png"
+  wood:"assets/343a057b39-6uveh-G3.png",
+  stone:"assets/d226902d4e-ot-Lc4Af.png",
+  metal:"assets/7bbca273e6-ms-S0Zjm.png"
 };
 const RESOURCE_SPRITE_VERSION="20260804-v28";
-const WALL_UPGRADE_ICON_URL="https://i.postimg.cc/7Z7TQLKQ/icone-upar-muro.png";
-const MAP_TERRAIN_URL="https://i.postimg.cc/BZTg5kGy/terreno.png";
-const MAP_BARRIER_URL="https://i.postimg.cc/zf4jp1vL/barreira-floresta-ossos-transparente-1800x1400-v2-(1).png";
+const WALL_UPGRADE_ICON_URL="assets/f60c572513-icone-upar-muro.png";
+const MAP_TERRAIN_URL="assets/dba3d09649-terreno.png";
+const MAP_BARRIER_URL="assets/2fa0bbe246-barreira-floresta-ossos-transparente-1800x1400-v2-1-.png";
 const WALL_TEXTURE_URLS={
-  1:{horizontal:"https://i.postimg.cc/GmYDtjsM/muro-madeira.png",vertical:"https://i.postimg.cc/cLyRT9pm/muro-madeira-1-vertical.png"},
-  2:{horizontal:"https://i.postimg.cc/Hs0cCLG3/muro-madeira-2-(1).png",vertical:"https://i.postimg.cc/RZBPqZZ9/muro-madeira-2-vertical.png"},
-  3:{horizontal:"https://i.postimg.cc/vZB8VbB0/muro-madeira-3-(1).png",vertical:"https://i.postimg.cc/TY9bqdcr/muro-madeira-3-vertical.png"},
-  4:{horizontal:"https://i.postimg.cc/y8qnJYnr/muro-madeira-4-(1).png",vertical:"https://i.postimg.cc/bw9N5PYm/parede-madeira-4-vertical.png"}
+  1:{horizontal:"assets/fd92ad667d-muro-madeira.png",vertical:"assets/f3a9d7d3b9-muro-madeira-1-vertical.png"},
+  2:{horizontal:"assets/06c6cda10e-muro-madeira-2-1-.png",vertical:"assets/caf767ad4d-muro-madeira-2-vertical.png"},
+  3:{horizontal:"assets/73b8826e6a-muro-madeira-3-1-.png",vertical:"assets/dc3248a370-muro-madeira-3-vertical.png"},
+  4:{horizontal:"assets/31f404df73-muro-madeira-4-1-.png",vertical:"assets/1762f78a50-parede-madeira-4-vertical.png"}
 };
 const PLAYER_SPRITE_VERSION="20260812-v44-ak";
 const PLAYER_SKIN_IDS=new Set(["male","female","soldier","michonne"]);
@@ -653,7 +653,7 @@ const ASSET_STAGE_RANGES={boot:[0,50],home:[50,90],lobby:[90,100]};
 // Mude esta versão somente quando uma nova versão do jogo precisar invalidar
 // os arquivos persistidos. Enquanto ela permanecer igual, imagens/GIFs são
 // reaproveitados do Cache Storage e não precisam ser baixados novamente.
-const ASSET_CACHE_VERSION="20260812-v44-ak";
+const ASSET_CACHE_VERSION="20260816-v45-github-assets";
 const ASSET_CACHE_NAME=`coroadinho-zumbi-assets-${ASSET_CACHE_VERSION}`;
 let assetCachePromise=null;
 async function openAssetCache(){
@@ -926,10 +926,7 @@ async function importModuleWithTimeout(source,timeoutMs=15000){
 async function importGifDecoder(){
   if(gifDecoderPromise)return gifDecoderPromise;
   gifDecoderPromise=(async()=>{
-    const sources=[
-      "https://cdn.jsdelivr.net/npm/gifuct-js@2.1.2/+esm",
-      "https://esm.sh/gifuct-js@2.1.2"
-    ];
+    const sources=["./vendor/gifuct-js-2.1.2.esm.js"];
     let lastError=null;
     for(const source of sources){
       try{return await importModuleWithTimeout(source)}catch(error){lastError=error}
@@ -1177,6 +1174,21 @@ function allStaticAssetsReady(){
   return Object.values(resourceSpriteReady).every(Boolean)&&axePickupSpriteReady&&syringePickupSpriteReady&&akPickupSpriteReady&&wallUpgradeIconReady&&mapTerrainSpriteReady&&mapBarrierSpriteReady&&carIdleSpriteReady&&pickupIdleSpriteReady&&monsterIdleSpriteReady&&lobbyBackgroundSprite.complete&&Number(lobbyBackgroundSprite.naturalWidth||0)>0&&lobbyStartButtonSprite.complete&&Number(lobbyStartButtonSprite.naturalWidth||0)>0&&skinShop&&walls&&ui
 }
 function allGameAssetsReady(){return allStaticAssetsReady()&&Object.values(assetGroupReady).every(Boolean)}
+function skinAssetGroups(skin=state?.me?.skin||storedPlayerSkin()){
+  const id=normalizePlayerSkin(skin);
+  if(id==="female")return["female"];
+  if(id==="soldier")return["soldier"];
+  if(id==="michonne")return["michonne"];
+  return["core","axe","playerZombie"]
+}
+function requiredGameAssetGroups(){return[...new Set(["ak","mapZombie","vehicle",...skinAssetGroups()])]}
+function requiredGameAssetsReady(){return allStaticAssetsReady()&&requiredGameAssetGroups().every(group=>assetGroupReady[group])}
+function prefetchRequiredGameAssets(){for(const group of requiredGameAssetGroups())ensureAssetGroupReady(group,false).catch(error=>console.warn(`Falha no pré-carregamento de ${group}.`,error))}
+function prefetchVisiblePlayerSkins(){
+  if(state?.room?.status!=="lobby"&&state?.room?.status!=="starting")return;
+  const groups=new Set();for(const player of Object.values(state.players||{}))for(const group of skinAssetGroups(player?.skin))groups.add(group);
+  for(const group of groups)ensureAssetGroupReady(group,false).catch(error=>console.warn(`Falha ao preparar a skin visível (${group}).`,error))
+}
 function setHomeLoadingVisual(loading,message="Carregando..."){
   const menu=document.querySelector(".home-menu-buttons");
   if(!menu)return;
@@ -1241,14 +1253,13 @@ function beginHomeAssetStage(force=false){
   if(homeAssetsReady&&!force){setHomeLoadingVisual(false);setHomeEntryEnabled(true);return Promise.resolve(true)}
   if(assetStagePromises.home)return assetStagePromises.home;
   assetStageState.home="loading";setHomeLoadingVisual(true,"Carregando...");setHomeEntryEnabled(false);$("homeAssetStatus").classList.remove("hidden","error");$("homeAssetRetryBtn").classList.add("hidden");
-  // 40% no menu: paredes e todas as animações pesadas restantes. Os downloads
-  // começam em paralelo com limite de concorrência; a decodificação segue serial
-  // para não congelar aparelhos com pouca memória/CPU.
-  const tasks=[...menuStaticAssetTasks(),groupTask("axe"),groupTask("ak"),groupTask("playerZombie"),groupTask("female"),groupTask("soldier"),groupTask("michonne"),groupTask("mapZombie"),groupTask("vehicle")];
+  // O menu só espera os recursos leves da própria interface. A skin escolhida,
+  // os zumbis e os veículos começam em segundo plano e terminam no lobby.
+  const tasks=[...menuStaticAssetTasks()];
   assetStagePromises.home=(async()=>{
     try{
       if(!bootAssetsReady&&!await beginBootAssetStage())return false;
-      await runAssetStage("home",tasks);homeAssetsReady=true;lobbyAssetsReady=false;gameAssetsReady=false;assetStageState.home="ready";setAssetStageVisual("home",tasks.length,tasks.length,"90% dos recursos prontos. Entre em uma sala para concluir.");setHomeLoadingVisual(false);setHomeEntryEnabled(true);return true
+      await runAssetStage("home",tasks);homeAssetsReady=true;lobbyAssetsReady=false;gameAssetsReady=false;assetStageState.home="ready";setAssetStageVisual("home",tasks.length,tasks.length,"Menu pronto. Recursos da partida carregando em segundo plano.");setHomeLoadingVisual(false);setHomeEntryEnabled(true);scheduleIdleTask(prefetchRequiredGameAssets,350,1800);return true
     }catch(error){
       assetStageState.home="error";console.warn("Falha na segunda etapa de carregamento.",error);$("homeAssetStatus").classList.add("error");$("homeAssetText").textContent="Falha ao preparar os recursos";$("homeAssetRetryBtn").classList.remove("hidden");setHomeLoadingVisual(true,"Falha ao carregar. Toque para tentar novamente.");setHomeEntryEnabled(false);return false
     }finally{assetStagePromises.home=null}
@@ -1260,13 +1271,13 @@ async function setLocalAssetReady(ready){
   try{await state.playerRef.update({assetsReady:!!ready,...(!ready?{ready:false}:{})})}catch(error){console.warn("Não foi possível atualizar o estado dos recursos.",error)}
 }
 function beginLobbyAssetStage(force=false){
-  if(lobbyAssetsReady&&!force){setLocalAssetReady(true);return Promise.resolve(true)}
+  if(lobbyAssetsReady&&requiredGameAssetsReady()&&!force){setLocalAssetReady(true);return Promise.resolve(true)}
   if(assetStagePromises.lobby)return assetStagePromises.lobby;
   const roomCode=state.roomCode,playerRef=state.playerRef;
   assetStageState.lobby="loading";$("lobbyAssetStatus").classList.remove("hidden","error");$("lobbyAssetRetryBtn").classList.add("hidden");
-  // Últimos 10% no lobby: apenas os estáticos finais do cenário/parede. As
-  // animações pesadas já foram baixadas e decodificadas no menu.
-  const tasks=[...lobbyStaticAssetTasks()];
+  // O lobby conclui o cenário e apenas os grupos necessários para a skin local.
+  // As skins dos outros jogadores são preparadas em paralelo sem bloquear o menu.
+  const tasks=[...lobbyStaticAssetTasks(),...requiredGameAssetGroups().map(groupTask)];
   assetStagePromises.lobby=(async()=>{
     try{
       if(!homeAssetsReady){
@@ -1274,10 +1285,10 @@ function beginLobbyAssetStage(force=false){
         if(!homeReady)throw new Error("Os recursos anteriores ainda não terminaram de carregar.")
       }
       await runAssetStage("lobby",tasks);
-      if(!allGameAssetsReady())throw new Error("Ainda existem recursos pendentes.");
+      if(!requiredGameAssetsReady())throw new Error("Ainda existem recursos essenciais pendentes.");
       lobbyAssetsReady=true;gameAssetsReady=true;assetStageState.lobby="ready";setAssetStageVisual("lobby",tasks.length,tasks.length,"100% dos recursos prontos para iniciar");
       if(state.roomCode===roomCode&&state.playerRef===playerRef)await setLocalAssetReady(true);
-      $("lobbyAssetStatus").classList.add("hidden");renderLobby();return true
+      $("lobbyAssetStatus").classList.add("hidden");prefetchVisiblePlayerSkins();renderLobby();return true
     }catch(error){
       assetStageState.lobby="error";console.warn("Falha ao confirmar os recursos da partida.",error);$("lobbyAssetStatus").classList.remove("hidden");$("lobbyAssetStatus").classList.add("error");$("lobbyAssetText").textContent="Falha ao confirmar os recursos";$("lobbyAssetRetryBtn").classList.remove("hidden");if(state.roomCode===roomCode)await setLocalAssetReady(false);renderLobby();return false
     }finally{assetStagePromises.lobby=null}
@@ -1288,11 +1299,11 @@ function scheduleHomeAssetLoading(){return beginBootAssetStage()}
 function scheduleLobbyAssetLoading(){return beginLobbyAssetStage()}
 function scheduleGameAssetRecovery(){/* Downloads de sprites são bloqueados durante a partida. */}
 async function ensureAssetsBeforeGameStart(){
-  if(allGameAssetsReady()){startGame();return}
+  if(requiredGameAssetsReady()){startGame();return}
   assetPreloadGate=true;sw("loading");$("loadingRetryBtn").classList.add("hidden");$("loadingDetail").textContent="Finalizando recursos antes de entrar na partida…";
   try{
-    const homeOk=homeAssetsReady||await beginHomeAssetStage(true),lobbyOk=homeOk&&(lobbyAssetsReady||await beginLobbyAssetStage(true));
-    if(homeOk&&lobbyOk&&allGameAssetsReady()&&state.room?.status==="playing")startGame();
+    const homeOk=homeAssetsReady||await beginHomeAssetStage(true),lobbyOk=homeOk&&(lobbyAssetsReady&&requiredGameAssetsReady()||await beginLobbyAssetStage(true));
+    if(homeOk&&lobbyOk&&requiredGameAssetsReady()&&state.room?.status==="playing")startGame();
     else{$("loadingDetail").textContent="Não foi possível preparar todos os recursos da partida.";$("loadingRetryBtn").classList.remove("hidden")}
   }finally{assetPreloadGate=false}
 }
@@ -1904,7 +1915,7 @@ async function attach(){
     bind("settings",value=>{state.room.settings=value||{};state.cameraZoom=Math.max(1,Math.min(3,Number(state.room.settings.cameraZoom||1)));if(state.room.status==="lobby"||state.room.status==="starting")renderLobby()});
     for(const field of ["phase","phaseEndsAt","roundStartedAt","startedPlayerCount","currentDay","winner","survivors","survivorIds","lastZombieSpawn","endedAt"]){bind(field,value=>{state.room[field]=value})}
     bind("countdownStartedAt",value=>{state.room.countdownStartedAt=value;if(state.room.status==="starting")startLobbyCountdown()});
-    bindCollection("players",(uid,value)=>{state.room.players=state.room.players||{};state.room.players[uid]=value;if(!updateLocalPlayerFromSnapshot())return;syncPlayerVisuals();syncVehicleVisuals();syncLobbyVisuals();reconcileVoicePeers();if(state.room.status==="lobby"||state.room.status==="starting")renderLobby();else updateWeaponUI();ensureActiveHost()},uid=>{if(uid===state.uid){state.playerMissing=true;if(state.lastKnownPlayer){state.room.players=state.room.players||{};state.room.players[uid]=state.lastKnownPlayer;state.players=state.room.players;state.me=state.lastKnownPlayer}if(!state.leaving&&!state.pageExitPrepared)recoverLocalMembership("child-removed");return}closeVoicePeer(uid);if(state.room.players)delete state.room.players[uid];updateLocalPlayerFromSnapshot();syncPlayerVisuals();syncVehicleVisuals();syncLobbyVisuals();reconcileVoicePeers();if(state.room.status==="lobby"||state.room.status==="starting")renderLobby();ensureActiveHost()});
+    bindCollection("players",(uid,value)=>{state.room.players=state.room.players||{};state.room.players[uid]=value;if(!updateLocalPlayerFromSnapshot())return;syncPlayerVisuals();syncVehicleVisuals();syncLobbyVisuals();reconcileVoicePeers();prefetchVisiblePlayerSkins();if(state.room.status==="lobby"||state.room.status==="starting")renderLobby();else updateWeaponUI();ensureActiveHost()},uid=>{if(uid===state.uid){state.playerMissing=true;if(state.lastKnownPlayer){state.room.players=state.room.players||{};state.room.players[uid]=state.lastKnownPlayer;state.players=state.room.players;state.me=state.lastKnownPlayer}if(!state.leaving&&!state.pageExitPrepared)recoverLocalMembership("child-removed");return}closeVoicePeer(uid);if(state.room.players)delete state.room.players[uid];updateLocalPlayerFromSnapshot();syncPlayerVisuals();syncVehicleVisuals();syncLobbyVisuals();reconcileVoicePeers();if(state.room.status==="lobby"||state.room.status==="starting")renderLobby();ensureActiveHost()});
     bindCollection("zombies",(id,value)=>{state.room.zombies=state.room.zombies||{};state.room.zombies[id]=value;syncZombieVisuals()},id=>{if(state.room.zombies)delete state.room.zombies[id];delete state.zombieVisuals[id]});
     bindCollection("vehicles",(id,value)=>{state.vehicleMetadata=state.vehicleMetadata||{};state.vehicleMetadata[id]=value||{};rebuildVehicleState(id);syncVehicleVisuals()},id=>{if(state.vehicleMetadata)delete state.vehicleMetadata[id];if(state.room.vehicles)delete state.room.vehicles[id];delete state.vehicleVisuals[id];if(state.localVehicleId===id){state.localVehicleId=null;state.localVehicle=null}});
     bindCollection("vehicleMotion",(id,value)=>{state.room.vehicleMotion=state.room.vehicleMotion||{};state.room.vehicleMotion[id]=value||{};rebuildVehicleState(id);syncVehicleVisuals()},id=>{if(state.room.vehicleMotion)delete state.room.vehicleMotion[id];rebuildVehicleState(id);syncVehicleVisuals()});
@@ -1950,8 +1961,8 @@ function closeSkinShop(){state.skinShopOpen=false;state.skinShopHover=false;$("s
 async function selectPlayerSkin(value){
   const skin=normalizePlayerSkin(value);if(state.skinSelectionBusy||state.room?.status!=="lobby"||!state.playerRef||!state.me)return;
   const previous=normalizePlayerSkin(state.me.skin);if(previous===skin){renderSkinShop();return}
-  state.skinSelectionBusy=true;state.me.skin=skin;if(state.players?.[state.uid])state.players[state.uid].skin=skin;renderSkinShop();
-  try{await state.playerRef.child("skin").set(skin);localStorage.setItem("zombie_skin",skin);if(state.lastKnownPlayer)state.lastKnownPlayer.skin=skin}
+  state.skinSelectionBusy=true;lobbyAssetsReady=false;await setLocalAssetReady(false);state.me.skin=skin;if(state.players?.[state.uid])state.players[state.uid].skin=skin;renderSkinShop();renderLobby();
+  try{await state.playerRef.child("skin").set(skin);localStorage.setItem("zombie_skin",skin);if(state.lastKnownPlayer)state.lastKnownPlayer.skin=skin;await beginLobbyAssetStage(true)}
   catch(error){console.warn("Não foi possível trocar a skin.",error);state.me.skin=previous;if(state.players?.[state.uid])state.players[state.uid].skin=previous}
   finally{state.skinSelectionBusy=false;renderSkinShop()}
 }
@@ -1960,7 +1971,7 @@ function processRoom(){
   if(state.room.status!=="playing")stopAkFiring();
   if(state.room.status==="playing"){
     state.resultLoading=false;state.returningToLobby=false;$("backLobbyBtn").disabled=false;closeSkinShop();closeLobbyChat();closeLobbySettings();stopLobbyLoop();
-    if(screens.game.classList.contains("hidden")){if(allGameAssetsReady())startGame();else ensureAssetsBeforeGameStart()}
+    if(screens.game.classList.contains("hidden")){if(requiredGameAssetsReady())startGame();else ensureAssetsBeforeGameStart()}
   }else if(state.room.status==="ended"){
     closeSkinShop();closeLobbyChat();closeLobbySettings();stopLobbyLoop();showResult()
   }else if(state.room.status==="starting"){
@@ -1981,9 +1992,9 @@ function renderLobby(){
   const ents=Object.entries(state.players||{}).sort((a,b)=>(a[1].joinedAt||0)-(b[1].joinedAt||0));
   const hostName=state.players?.[state.room?.hostId]?.name||"---",settings=state.room?.settings||{},maxPlayers=Math.max(1,Number(settings.maxPlayers||6)),starting=state.room?.status==="starting";
   $("roomCodeLabel").textContent=state.roomCode||"---";$("lobbyPlayerCount").textContent=`${ents.length}/${maxPlayers}`;$("lobbyOwnerLabel").textContent=`Dono da partida: ${hostName}`;
-  const localLoaded=lobbyAssetsReady&&allGameAssetsReady()&&state.me?.assetsReady===true;
+  const localLoaded=lobbyAssetsReady&&requiredGameAssetsReady()&&state.me?.assetsReady===true;
   const readyBtn=$("readyBtn");readyBtn.disabled=starting||!localLoaded;readyBtn.textContent=!localLoaded?"Carregando recursos…":starting?"Partida iniciando…":state.me?.ready?"Cancelar pronto":"Estou pronto";readyBtn.classList.toggle("ready",!!state.me?.ready);
-  const everyoneLoaded=ents.length>=1&&ents.every(([,p])=>p.assetsReady===true),everyoneReady=everyoneLoaded&&ents.every(([,p])=>p.ready),can=!starting&&state.host&&everyoneReady&&lobbyAssetsReady&&allGameAssetsReady();
+  const everyoneLoaded=ents.length>=1&&ents.every(([,p])=>p.assetsReady===true),everyoneReady=everyoneLoaded&&ents.every(([,p])=>p.ready),can=!starting&&state.host&&everyoneReady&&lobbyAssetsReady&&requiredGameAssetsReady();
   const startBtn=$("startGameBtn");startBtn.disabled=!can;startBtn.classList.toggle("local-ready",!!state.me?.ready);startBtn.classList.toggle("can-start",can);startBtn.setAttribute("aria-label",starting?"Partida iniciando":!state.host?"Somente o dono pode iniciar":!everyoneLoaded?"Aguardando carregamento dos jogadores":!everyoneReady?"Aguardando todos ficarem prontos":"Iniciar partida");startBtn.title=startBtn.getAttribute("aria-label");
   $("maxPlayers").value=maxPlayers;$("playerSpeed").value=normalizePlayerSpeed(settings.speed??PLAYER_SPEED_VALUES.slow);$("difficulty").value=settings.difficulty||"normal";$("dayDuration").value=Math.max(15,Math.min(600,Number(settings.dayDuration||120)));$("nightDuration").value=Math.max(15,Math.min(600,Number(settings.nightDuration||30)));$("totalDays").value=Math.max(1,Math.min(30,Number(settings.totalDays||2)));const zoom=Math.max(1,Math.min(3,Number(settings.cameraZoom||1)));$("cameraZoom").value=zoom;state.cameraZoom=zoom;
   setLobbySettingsEditable(state.host&&!starting);$("lobbySettingsNote").textContent=state.host?(starting?"A partida está iniciando. As configurações foram bloqueadas.":"Você é o dono da partida e pode alterar estas opções."):`Somente ${hostName} pode alterar as opções da partida.`
@@ -1998,7 +2009,7 @@ function adjustNumericSetting(id,delta){
 async function startMatch(){
   if(!state.host||state.matchStartInFlight||state.room?.status!=="lobby")return;state.matchStartInFlight=true;
   try{
-    if(!lobbyAssetsReady||!allGameAssetsReady())return toast("Aguarde o carregamento dos recursos.");
+    if(!lobbyAssetsReady||!requiredGameAssetsReady())return toast("Aguarde o carregamento dos recursos.");
     await saveSettings();const ps=Object.entries(state.players||{});
     if(ps.length<1||!ps.every(([,p])=>p.assetsReady===true))return toast("Aguarde todos terminarem o carregamento.");
     if(!ps.every(([,p])=>p.ready))return toast("Todos precisam estar prontos.");
@@ -4497,7 +4508,7 @@ document.addEventListener("click",e=>{const panel=$("homeSettingsPanel"),btn=$("
 $("joinRoomBtn").onclick=joinRoom;
 $("roomCodeInput").addEventListener("keydown",e=>{if(e.key==="Enter")joinRoom()});
 $("copyCodeBtn").onclick=()=>navigator.clipboard?.writeText(state.roomCode);
-$("readyBtn").onclick=async()=>{if(!lobbyAssetsReady||!allGameAssetsReady()||state.me?.assetsReady!==true)return;await state.playerRef.child("ready").set(!state.me.ready)};
+$("readyBtn").onclick=async()=>{if(!lobbyAssetsReady||!requiredGameAssetsReady()||state.me?.assetsReady!==true)return;await state.playerRef.child("ready").set(!state.me.ready)};
 $("startGameBtn").onclick=()=>{requestGameFullscreen();startMatch()};
 $("leaveRoomBtn").onclick=()=>leave(true);
 $("lobbyVoiceBtn").onclick=e=>{e.preventDefault();e.stopPropagation();toggleVoiceMic()};
