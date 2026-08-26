@@ -3135,7 +3135,7 @@ async function updateZombies(d){
         activeHumanIds.delete(target.uid);
         const hasAnotherHuman=activeHumanIds.size>=1;
         const shouldTransform=startedCount<=1||hasAnotherHuman;
-        appendPlayerInventoryDrops(target.uid,target.p,structures,updates,deathMoment);
+        appendPlayerInventoryDrops(target.uid,target.p,structures,updates,deathMoment,shouldTransform?["syringe"]:[]);
         updates[`players/${target.uid}/alive`]=false;
         updates[`players/${target.uid}/moving`]=false;
         updates[`players/${target.uid}/vx`]=0;
@@ -3253,13 +3253,14 @@ function eliminationDropPoint(x,y,index,structures,radius=14){
   for(const distance of distances){const px=Math.max(bounds.left+radius+2,Math.min(bounds.right-radius-2,Number(x||0)+Math.cos(angle)*distance)),py=Math.max(bounds.top+radius+2,Math.min(bounds.bottom-radius-2,Number(y||0)+Math.sin(angle)*distance));if(!zombiePositionBlocked(px,py,radius,structures))return{x:px,y:py}}
   return{x:Math.max(bounds.left+radius+2,Math.min(bounds.right-radius-2,Number(x||0))),y:Math.max(bounds.top+radius+2,Math.min(bounds.bottom-radius-2,Number(y||0)))}
 }
-function appendPlayerInventoryDrops(uid,player,structures,updates,now=Date.now()){
+function appendPlayerInventoryDrops(uid,player,structures,updates,now=Date.now(),preservedWeapons=[]){
   state.eliminationDropAt=state.eliminationDropAt||{};
   if(!uid||!player||!updates||!state.roomRef||now-Number(state.eliminationDropAt[uid]||0)<1500)return false;
   state.eliminationDropAt[uid]=now;
-  const originX=Number(player.x||0),originY=Number(player.y||0);let dropIndex=0;
+  const preserved=new Set(preservedWeapons),originX=Number(player.x||0),originY=Number(player.y||0);let dropIndex=0;
   player.weapons={...(player.weapons||{})};
   for(const weapon of DROPPABLE_WEAPON_TYPES){
+    if(preserved.has(weapon))continue;
     if(player.weapons[weapon]!==true)continue;const dropId=state.roomRef.child("weaponDrops").push().key;if(!dropId)continue;const point=eliminationDropPoint(originX,originY,dropIndex++,structures,16);
     updates[`weaponDrops/${dropId}`]={type:weapon,x:Math.round(point.x*10)/10,y:Math.round(point.y*10)/10,sourceX:Math.round(originX*10)/10,sourceY:Math.round(originY*10)/10,droppedBy:uid,droppedAt:serverTime(),pickupAvailableAt:now+700};
     player.weapons[weapon]=false;updates[`players/${uid}/weapons/${weapon}`]=false
@@ -3273,7 +3274,7 @@ function appendPlayerInventoryDrops(uid,player,structures,updates,now=Date.now()
     }
     resources[type]=0;updates[`players/${uid}/resources/${type}`]=0
   }
-  for(const weapon of WEAPON_TYPES){player.weapons[weapon]=false;updates[`players/${uid}/weapons/${weapon}`]=false}
+  for(const weapon of WEAPON_TYPES){if(preserved.has(weapon))continue;player.weapons[weapon]=false;updates[`players/${uid}/weapons/${weapon}`]=false}
   player.resources=resources;player.equippedWeapon=null;updates[`players/${uid}/equippedWeapon`]=null;
   if(state.players?.[uid]){state.players[uid].weapons={...player.weapons};state.players[uid].resources={...resources};state.players[uid].equippedWeapon=null}
   return true
@@ -3723,7 +3724,6 @@ async function performSyringeUse(){
   if(!state.me||state.room?.status!=="playing"||!state.playerRef||state.cureInFlight||state.weaponWheelOpen||state.selectedBuild||state.selectedWeapon!=="syringe"||!hasWeapon("syringe")||!isLocalZombie()||isPlayerTransforming(state.me)||isPlayerUsingSyringe(state.me,true))return;
   state.cureInFlight=true;
   try{
-    if(!syringeCurePlayerGifFrames.length)return;
     const startedAt=Date.now(),duration=syringeCureDuration();
     state.localCureStartedAt=startedAt;state.localMoving=false;closeWeaponWheel();
     await state.playerRef.update({equippedWeapon:"syringe",cureStartedAt:startedAt,cureDuration:duration,moving:false,vx:0,vy:0});
