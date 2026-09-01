@@ -259,6 +259,15 @@
     @media(max-width:560px){.skin-shop-panel{padding:16px}.skin-shop-grid{gap:8px}.skin-shop-option{min-height:235px;padding:9px}.skin-shop-option img{height:165px}.skin-shop-option-name{font-size:15px}.skin-shop-head{margin-bottom:12px}}
     @media(orientation:landscape) and (max-height:560px){.skin-shop-panel{width:min(610px,calc(100vw - 24px));max-height:calc(100vh - 18px);padding:13px 16px}.skin-shop-head{margin-bottom:9px}.skin-shop-head h2{font-size:22px}.skin-shop-option{min-height:190px}.skin-shop-option img{height:128px}.skin-shop-close{width:36px;height:36px;min-width:36px}}
 
+    #npcCountField.disabled{display:none}.clan-build-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+    .clan-overlay,.dialogue-overlay{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:14px;background:rgba(3,6,4,.84);backdrop-filter:blur(8px)}
+    .clan-panel,.dialogue-panel{width:min(620px,100%);max-height:90vh;overflow:auto;padding:18px;border-radius:20px;background:var(--panel2);border:1px solid var(--line);box-shadow:var(--shadow)}
+    .clan-head,.dialogue-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.clan-head h2,.dialogue-head h2{margin:0}.round-close{width:40px;height:40px;padding:0;border-radius:50%;background:rgba(255,255,255,.09);font-size:22px}
+    .clan-list,.clan-members{display:grid;gap:8px}.clan-card,.clan-member{padding:11px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid var(--line)}.clan-member{display:flex;align-items:center;justify-content:space-between;gap:8px}.clan-member-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.mini-btn{padding:7px 9px;border-radius:9px;background:rgba(255,255,255,.11);font-size:11px;font-weight:850}.mini-btn.danger{background:rgba(239,90,90,.75)}
+    .clan-controls{display:grid;gap:9px;margin:12px 0}.clan-controls .row{align-items:end}.clan-empty{padding:14px;text-align:center;color:var(--muted)}
+    .dialogue-log{min-height:150px;max-height:42vh;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:12px;background:rgba(0,0,0,.24);margin-bottom:10px}.dialogue-line{max-width:86%;padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.08)}.dialogue-line.player{align-self:flex-end;background:rgba(73,184,107,.24)}.dialogue-line.npc{align-self:flex-start}.dialogue-compose{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}.npc-thinking{color:var(--muted);font-size:12px;font-style:italic}
+    @media(max-width:560px){.clan-build-actions{grid-template-columns:1fr}.clan-panel,.dialogue-panel{padding:14px}.clan-member{align-items:flex-start;flex-direction:column}.clan-member-actions{justify-content:flex-start}}
+
 </style>
 </head>
 <body>
@@ -333,6 +342,8 @@
           <div class="field"><label>Máximo de jogadores</label><select id="maxPlayers"><option>2</option><option>4</option><option selected>6</option><option>8</option><option>10</option></select></div>
           <div class="field"><label>Velocidade</label><select id="playerSpeed"><option value="115" selected>Lenta</option><option value="140">Normal</option><option value="170">Rápida</option></select></div>
           <div class="field"><label>Dificuldade</label><select id="difficulty"><option value="easy">Fácil</option><option value="normal" selected>Normal</option><option value="hard">Difícil</option></select></div>
+          <div class="field"><label>NPCs sobreviventes</label><select id="npcsEnabled"><option value="true" selected>Ativado</option><option value="false">Desativado</option></select></div>
+          <div id="npcCountField" class="field"><label>Quantidade de NPCs</label><div class="stepper"><button type="button" class="stepper-btn" data-step-target="npcCount" data-step="-1" aria-label="Diminuir NPCs">−</button><input id="npcCount" class="input" type="number" min="4" max="12" step="1" value="8" readonly /><button type="button" class="stepper-btn" data-step-target="npcCount" data-step="1" aria-label="Aumentar NPCs">+</button></div></div>
           <div class="field"><label>Quantidade de dias</label><div class="stepper"><button type="button" class="stepper-btn" data-step-target="totalDays" data-step="-1" aria-label="Diminuir quantidade de dias">−</button><input id="totalDays" class="input" type="number" min="1" max="30" step="1" value="2" readonly /><button type="button" class="stepper-btn" data-step-target="totalDays" data-step="1" aria-label="Aumentar quantidade de dias">+</button></div></div>
           <div class="field"><label>Dia (segundos)</label><div class="stepper"><button type="button" class="stepper-btn" data-step-target="dayDuration" data-step="-5" aria-label="Diminuir duração do dia">−</button><input id="dayDuration" class="input" type="number" min="15" max="600" step="5" value="120" readonly /><button type="button" class="stepper-btn" data-step-target="dayDuration" data-step="5" aria-label="Aumentar duração do dia">+</button></div></div>
           <div class="field"><label>Noite (segundos)</label><div class="stepper"><button type="button" class="stepper-btn" data-step-target="nightDuration" data-step="-5" aria-label="Diminuir duração da noite">−</button><input id="nightDuration" class="input" type="number" min="15" max="600" step="5" value="30" readonly /><button type="button" class="stepper-btn" data-step-target="nightDuration" data-step="5" aria-label="Aumentar duração da noite">+</button></div></div>
@@ -373,7 +384,7 @@
 </section>
 
 <section id="gameScreen" class="screen hidden"><canvas id="gameCanvas"></canvas><div class="hud"><div class="hud-primary"><div class="hud-card"><b id="phaseLabel">DIA</b><div id="timerLabel" class="small">02:00</div></div><div class="hud-card">Vida<div class="bar"><div id="healthBar"></div></div></div><div id="vehicleHealthCard" class="hud-card vehicle-card hidden">Carro <span id="vehicleHealthText" class="small">200/200</span><div class="bar vehicle-health-bar"><div id="vehicleHealthBar"></div></div></div></div><div class="hud-right"><div class="game-settings-wrap"><button id="gameSettingsBtn" class="game-settings-toggle" aria-label="Abrir configurações da partida" title="Configurações">⚙</button><div id="gameSettingsPanel" class="game-settings-panel hidden"><button id="leaveGameBtn" class="btn danger">Sair da partida</button></div></div><div class="game-status-row"><div class="hud-card"><b id="aliveCountLabel">0 vivos</b><div class="small" id="zombieCountLabel">0 zumbis</div></div><button id="gameVoiceBtn" class="voice-toggle" type="button" aria-label="Ativar microfone" aria-pressed="false" title="Ativar microfone"><span aria-hidden="true">🎙️</span><i class="voice-dot" aria-hidden="true"></i></button><button id="gameChatBtn" class="game-chat-toggle" type="button" aria-label="Abrir conversa" title="Conversar"><span aria-hidden="true">💬</span></button></div></div></div><form id="gameChatComposer" class="game-chat-composer hidden" autocomplete="off"><input id="gameChatInput" class="game-chat-input" maxlength="90" placeholder="Digite sua mensagem…" aria-label="Mensagem da partida" enterkeyhint="send" /><button id="gameChatSendBtn" class="game-chat-send" type="submit">Enviar</button><div id="gameChatRateNote" class="game-chat-rate-note" aria-live="polite"></div></form>
-  <div id="joystick" class="joystick"><div id="stick" class="stick"></div></div><div class="game-actions"><button id="interactBtn" class="btn hidden">Interagir</button><button id="attackBtn" class="attack-btn hidden" aria-label="Atacar com machado" title="Atacar"><img data-asset-src="assets/5c9a9d6c5a-botao-ataque.png" alt="" aria-hidden="true" draggable="false" /><span class="attack-button-label">Atacar</span></button><button id="buildBtn" class="btn gold build-sprite-btn" aria-label="Construir" title="Construir"><img data-asset-src="assets/acaeb9de7a-VIK3Uv-L.png" alt="" aria-hidden="true" draggable="false" /><span class="build-button-label">Construir</span></button><button id="rotateBuildBtn" class="btn secondary hidden">Girar: horizontal</button></div><div id="weaponHud" class="weapon-hud"><div class="weapon-slots"><button class="weapon-slot locked unowned" data-weapon="axe" data-slot="1" aria-label="Slot 1 vazio"><span class="weapon-slot-number">1</span><img data-asset-src="assets/41452782b8-b6bbf502-ca42-4137-a4dd-e52c35281798.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button><button class="weapon-slot locked unowned" data-weapon="syringe" data-slot="2" aria-label="Slot 2 vazio"><span class="weapon-slot-number">2</span><img data-asset-src="assets/1607473511-7f1fea02-5950-45b5-91c3-db2fe5ece47b.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button><button class="weapon-slot locked unowned" data-weapon="ak" data-slot="3" aria-label="Slot 3 vazio"><span class="weapon-slot-number">3</span><img data-asset-src="assets/69483bebce-7638f1e6-a1cc-4fcc-b8b3-d0d898698c48.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button><button class="weapon-slot special-slot hidden locked unowned" data-weapon="katana" data-slot="4" aria-label="Slot 4 vazio"><span class="weapon-slot-number">4</span><img data-asset-src="assets/0a867a02dd-katana-cartoon-transparente.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button></div></div><div id="buildPicker" class="build-picker hidden"><div class="build-picker-head"><div class="build-picker-title">Escolha a construção</div><button id="closeBuildPickerBtn" class="btn secondary build-picker-close" aria-label="Fechar">×</button></div><div class="build-options"><button class="build-option" data-build="wall">Parede</button><button class="build-option" data-build="door">Porta na parede</button><button class="build-option" data-build="squareSmall">Quadrada pequena</button><button class="build-option" data-build="square">Quadrada grande</button><button class="build-option" data-build="rectangleSmall">Retangular pequena</button><button class="build-option" data-build="rectangle">Retangular grande</button></div></div></section>
+  <div id="joystick" class="joystick"><div id="stick" class="stick"></div></div><div class="game-actions"><button id="interactBtn" class="btn hidden">Interagir</button><button id="attackBtn" class="attack-btn hidden" aria-label="Atacar com machado" title="Atacar"><img data-asset-src="assets/5c9a9d6c5a-botao-ataque.png" alt="" aria-hidden="true" draggable="false" /><span class="attack-button-label">Atacar</span></button><button id="buildBtn" class="btn gold build-sprite-btn" aria-label="Construir" title="Construir"><img data-asset-src="assets/acaeb9de7a-VIK3Uv-L.png" alt="" aria-hidden="true" draggable="false" /><span class="build-button-label">Construir</span></button><button id="rotateBuildBtn" class="btn secondary hidden">Girar: horizontal</button></div><div id="weaponHud" class="weapon-hud"><div class="weapon-slots"><button class="weapon-slot locked unowned" data-weapon="axe" data-slot="1" aria-label="Slot 1 vazio"><span class="weapon-slot-number">1</span><img data-asset-src="assets/41452782b8-b6bbf502-ca42-4137-a4dd-e52c35281798.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button><button class="weapon-slot locked unowned" data-weapon="syringe" data-slot="2" aria-label="Slot 2 vazio"><span class="weapon-slot-number">2</span><img data-asset-src="assets/1607473511-7f1fea02-5950-45b5-91c3-db2fe5ece47b.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button><button class="weapon-slot locked unowned" data-weapon="ak" data-slot="3" aria-label="Slot 3 vazio"><span class="weapon-slot-number">3</span><img data-asset-src="assets/69483bebce-7638f1e6-a1cc-4fcc-b8b3-d0d898698c48.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button><button class="weapon-slot special-slot hidden locked unowned" data-weapon="katana" data-slot="4" aria-label="Slot 4 vazio"><span class="weapon-slot-number">4</span><img data-asset-src="assets/0a867a02dd-katana-cartoon-transparente.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-slot-name">Vazio</span></button></div></div><div id="buildPicker" class="build-picker hidden"><div class="build-picker-head"><div class="build-picker-title">Construção e clã</div><button id="closeBuildPickerBtn" class="btn secondary build-picker-close" aria-label="Fechar">×</button></div><div class="clan-build-actions"><button id="createClanBtn" class="btn">Criar clã</button><button id="joinClanBtn" class="btn secondary">Entrar em clã</button></div><div class="build-options"><button class="build-option" data-build="wall">Parede</button><button class="build-option" data-build="door">Porta na parede</button><button class="build-option" data-build="squareSmall">Quadrada pequena</button><button class="build-option" data-build="square">Quadrada grande</button><button class="build-option" data-build="rectangleSmall">Retangular pequena</button><button class="build-option" data-build="rectangle">Retangular grande</button></div></div></section>
 
 <div id="weaponWheel" class="weapon-wheel-overlay hidden"><div class="weapon-wheel-panel" role="dialog" aria-label="Roda de seleção de armas"><button class="weapon-wheel-choice slot-1 locked unowned" data-weapon="axe"><img data-asset-src="assets/41452782b8-b6bbf502-ca42-4137-a4dd-e52c35281798.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-choice-name">Slot 1 vazio</span></button><button class="weapon-wheel-choice slot-2 locked unowned" data-weapon="syringe"><img data-asset-src="assets/1607473511-7f1fea02-5950-45b5-91c3-db2fe5ece47b.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-choice-name">Slot 2 vazio</span></button><button class="weapon-wheel-choice slot-3 locked unowned" data-weapon="ak"><img data-asset-src="assets/69483bebce-7638f1e6-a1cc-4fcc-b8b3-d0d898698c48.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-choice-name">Slot 3 vazio</span></button><button class="weapon-wheel-choice special-slot slot-4 hidden locked unowned" data-weapon="katana"><img data-asset-src="assets/0a867a02dd-katana-cartoon-transparente.png" alt="" draggable="false" /><span class="weapon-empty weapon-slot-placeholder">+</span><span class="weapon-choice-name">Slot 4 vazio</span></button><button id="unarmedWeaponChoice" class="weapon-wheel-center selected" data-weapon="none"><span>GUARDAR</span><strong id="weaponWheelName">SEM ARMA</strong><small>andar sem item</small></button></div></div>
 <div id="inventoryOverlay" class="overlay hidden"><div class="overlay-card"><div style="display:flex;justify-content:space-between;align-items:center"><h2>Inventário</h2><button id="closeInventoryBtn" class="btn secondary">Fechar</button></div><div id="inventoryGrid" class="inventory-grid"></div><div class="notice"><b>Paredes:</b><br>Nível 1: 8 madeiras · 160 resistência.<br>Nível 2: +12 madeiras e 8 pedras · 300 resistência.<br>Nível 3: +10 madeiras, 14 pedras e 3 ferros · 520 resistência.<br>Nível 4: +18 pedras e 10 ferros · 850 resistência.<br><br>Fortalezas prontas usam várias paredes de nível 1 e cobram cada segmento individualmente.</div></div></div>
@@ -390,6 +401,9 @@
     </div>
   </div>
 </div>
+
+<div id="clanOverlay" class="clan-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="clanTitle"><div class="clan-panel"><div class="clan-head"><h2 id="clanTitle">Clãs</h2><button id="closeClanBtn" class="round-close" aria-label="Fechar">×</button></div><div id="clanContent"></div></div></div>
+<div id="dialogueOverlay" class="dialogue-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="dialogueTitle"><div class="dialogue-panel"><div class="dialogue-head"><h2 id="dialogueTitle">Sobrevivente</h2><button id="closeDialogueBtn" class="round-close" aria-label="Encerrar conversa">×</button></div><div id="dialogueLog" class="dialogue-log"></div><div id="npcThinking" class="npc-thinking hidden">Pensando…</div><form id="dialogueForm" class="dialogue-compose"><input id="dialogueInput" class="input" maxlength="100" placeholder="Digite uma mensagem…" autocomplete="off" /><button id="dialogueSendBtn" class="btn" type="submit">Enviar</button></form></div></div>
 
 <div id="matchTransitionOverlay" class="match-transition-overlay hidden"></div>
 
@@ -1496,6 +1510,7 @@ function playerAkFireVisual(player,me=false,now=Date.now()){
 
 const state={uid:null,user:null,name:"",roomCode:null,room:null,players:{},me:null,lastKnownPlayer:null,playerMissing:false,membershipRecoveryPromise:null,leaving:false,pageExitPrepared:false,presenceSessionId:null,presenceArmPromise:null,host:false,roomRef:null,playerRef:null,listeners:[],keys:{},joyX:0,joyY:0,localMoving:false,localX:900,localY:700,dirX:0,dirY:1,lastFrame:performance.now(),lastDrawAt:0,loop:null,gameCtx:null,lastSync:0,lastHostTickAt:0,remote:{},zombieVisuals:{},zombieCorpses:{},resourceVisuals:{},vehicleVisuals:{},vehicleMetadata:{},localVehicle:null,localVehicleId:null,lastVehicleSync:0,lastVehicleOccupantSync:0,lastVehicleHostStep:0,lastVehicleCollisionStep:0,lastVehicleReconcileAt:0,vehicleHitCooldowns:{},vehicleWallCooldowns:{},vehicleEventBusy:false,enteringVehicle:false,exitingVehicle:false,collectingResources:new Set(),structures:{},selectedBuild:false,buildOrientation:"horizontal",buildType:"wall",buildX:0,buildY:0,buildPointerActive:false,selectedWeapon:null,weaponWheelOpen:false,gameSettingsOpen:false,weaponUiSignature:"",localAttackStartedAt:0,localAttackDirX:1,localAttackDirY:0,localAttackAimX:null,localAttackAimY:null,localAttackFacing:1,lastAxeAttackAt:0,attackInFlight:false,pendingAxeImpactTimer:null,attackSequence:0,localAkFireStartedAt:0,localAkShotAt:0,localAkDirX:1,localAkDirY:0,localAkRawDirX:1,localAkRawDirY:0,akAssistTargetKind:null,akAssistTargetId:null,akAssistTargetUntil:0,akTriggerHeld:false,akKeyboardFiring:false,akFireTimer:null,akAttackPointerId:null,akShotSequence:0,bulletVisuals:[],seenAttackVisualIds:new Set(),localCureStartedAt:0,cureInFlight:false,pendingCureTimer:null,processingAttacks:false,hostTickBusy:false,hostClaimInFlight:false,resyncInFlight:false,lastRealtimeResync:0,attackCooldowns:{},collectingWeaponDrops:new Set(),droppingWeapons:new Set(),weaponSlotDrag:null,lastHudUpdate:0,lastKnockbackAppliedAt:0,lastLocalAttackedAt:0,localDamageFlashAt:0,localKnockback:null,cameraZoom:1,vehicleCameraScale:1,vehicleLightScale:1,nightVisionScale:1.12,viewTransitionAt:performance.now(),nightQualityScale:1,fpsWindowStarted:performance.now(),fpsFrames:0,measuredFps:60,localPlayerHitVisual:null,renderFrameCache:null,ending:false,resultLoading:false,returningToLobby:false,upgradingWall:false,phaseChanging:false,presenceTimer:null,cleanupTimer:null,reconcilingZombie:false,gameChatOpen:false,lobbyChatOpen:false,lobbySettingsOpen:false,skinShopOpen:false,skinShopHover:false,skinSelectionBusy:false,gameChatSendTimes:[],lastGameChatSendAt:0,speechBubbles:{},seenSpeechIds:new Set(),lobbyLoop:null,lobbyCtx:null,lobbyLastFrame:performance.now(),lobbyLastSync:0,lobbyX:640,lobbyY:610,lobbyDirX:0,lobbyDirY:1,lobbyFacing:1,lobbyMoving:false,lobbyJoyX:0,lobbyJoyY:0,lobbyRemote:{},lobbyPositionRoom:null,lobbyCameraX:640,lobbyCameraY:600,lobbyResizeBound:false,lobbyCountdownToken:0,lobbyCountdownRaf:null,lobbyFinalizeTimer:null,lobbyFinalizing:false,matchStartInFlight:false,voiceMicEnabled:false,voiceMicBusy:false,voiceMicError:false,voiceLocalStream:null,voiceLocalSource:null,voiceLocalAnalyser:null,voiceLocalLevelData:null,voiceAudioContext:null,voicePeers:{},voiceSpeaking:{},voiceMutedUsers:new Set(),voiceLevelTimer:null,voiceHealthTimer:null,voiceHealthBusy:false,voiceSignalRef:null,voiceSignalCallback:null,voiceSignalChains:{},voiceReconnectTimers:{},voiceRebuildTimer:null,voiceGeneration:0};
 state.eliminationDropAt={};
+Object.assign(state,{npcs:{},npcVisuals:{},npcBrains:{},npcLastSync:0,npcLastStep:0,npcNavVersion:0,npcNavCache:null,clans:{},clanCommands:{},dialogueSessions:{},dialogueRequests:{},activeDialogueNpcId:null,activeDialogueSessionId:null,activeDialogueMessages:[],dialogueBusy:false,lastClanRenderSignature:"",lastClanReconcile:0,authorityEpoch:0,matchId:null,firebaseConnected:false,processingClanCommands:false,processingDialogueRequests:false});
 const MAP={width:2000,height:1556,bounds:{left:120,top:110,right:1880,bottom:1446},spawn:[[260,360],[1740,325],[280,1220],[1720,1220],[1000,235],[1000,1300],[355,720],[1645,720],[720,555],[1280,665]]};
 const diffs={easy:{zombies:4,speed:82,hp:50,damage:7,spawnEvery:12000,maxZombies:10,dailyZombieIncrease:3},normal:{zombies:8,speed:104,hp:70,damage:10,spawnEvery:7000,maxZombies:20,dailyZombieIncrease:5},hard:{zombies:12,speed:128,hp:100,damage:14,spawnEvery:5200,maxZombies:30,dailyZombieIncrease:8}};
 const PRESENCE_INTERVAL=4000,PLAYER_OFFLINE_GRACE_MS=90000,PLAYER_CONNECTED_STALE_MS=5*60*1000,CURRENT_ROOM_CLEANUP_INTERVAL=15000,GLOBAL_ROOM_CLEANUP_INTERVAL=60000,LOCAL_MEMBERSHIP_RECOVERY_DELAY_MS=350,DAWN_DURATION=9000,RESOURCE_MAGNET_RADIUS=72,RESOURCE_MAGNET_RELEASE_RADIUS=90,ZOMBIE_SEPARATION_RADIUS=58,ZOMBIE_SEPARATION_STRENGTH=1.18;
@@ -1517,6 +1532,8 @@ const VEHICLE_TYPE_CONFIGS={
 function normalizeVehicleType(value){return value==="pickup"||value==="monster"?value:"car"}
 function vehicleConfig(vehicleOrType){const type=typeof vehicleOrType==="string"?normalizeVehicleType(vehicleOrType):normalizeVehicleType(vehicleOrType?.type);return VEHICLE_TYPE_CONFIGS[type]}
 const PLAYER_SYNC_INTERVAL=85,VEHICLE_SYNC_INTERVAL=55,ZOMBIE_TICK_INTERVAL=65,HOST_TICK_INTERVAL=35,VEHICLE_RECONCILE_GRACE=1800,PLAYER_PREDICTION_MS=220,ZOMBIE_PREDICTION_MS=420,VEHICLE_PREDICTION_MS=700;
+const NPC_MIN_COUNT=4,NPC_MAX_COUNT=12,NPC_SIM_INTERVAL=75,NPC_SYNC_INTERVAL=150,NPC_DECISION_MIN=380,NPC_DECISION_MAX=720,NPC_PREDICTION_MS=520,NPC_RADIUS=13,NPC_INTERACTION_DISTANCE=82,NPC_DIALOGUE_BREAK_DISTANCE=145,NPC_LOW_HEALTH=35,NPC_NAV_CELL=44,NPC_STUCK_MS=1250,NPC_OUTLINE_COLORS=["#ffd43b","#4dabf7","#69db7c","#ff922b","#da77f2","#ff6b6b"];
+const NPC_SKINS=["male","female","soldier","michonne"],NPC_MOODS=["ALEGRE","NORMAL","ZANGADO"],NPC_STATES=new Set(["IDLE","EXPLORE","COLLECT","FLEE","ATTACK","DEFEND","FOLLOW","BUILD","RETURN_HOME","ENTER_BASE","CLOSE_DOOR","TALKING"]);
 const LOBBY_WORLD={width:1280,height:853,walk:{left:480,right:800,top:525,bottom:675}},LOBBY_SYNC_INTERVAL=90,LOBBY_VIEW_ZOOM=1.30;
 const LOBBY_SKIN_SHOP={x:640,y:602,collisionRadius:56,proximityRadius:118,maxWidth:146,maxHeight:112};
 const LOBBY_CAMERA_FOLLOW_X=.34,LOBBY_CAMERA_FOLLOW_Y=.28,LOBBY_NIGHT_DARKNESS=.78;
@@ -1706,7 +1723,7 @@ auth.onAuthStateChanged(async u=>{state.user=u;state.uid=u?.uid||null;if(u){
 }else{if(globalRoomCleanupTimer)clearInterval(globalRoomCleanupTimer);globalRoomCleanupTimer=null;$("loginArea").classList.remove("hidden");$("loggedArea").classList.add("hidden");status("Entre com Google ou como convidado.")}
   setHomeEntryEnabled(homeAssetsReady&&!!u)
 });
-async function createRoom(){try{if(!homeAssetsReady)return status("Aguarde o carregamento dos recursos da tela inicial.",true);const name=clean($("playerName").value);if(!name)return status("Digite seu nome.",true);let c=null;for(let i=0;i<24;i++){const candidate=code();if(!(await db.ref(`${ROOT}/rooms/${candidate}`).once("value")).exists()){c=candidate;break}}if(!c)throw Error("Não foi possível gerar um código livre. Tente novamente.");const p=playerData(name,0);await db.ref(`${ROOT}/rooms/${c}`).set({createdAt:serverTime(),hostId:state.uid,status:"lobby",settings:{maxPlayers:6,speed:115,difficulty:"normal",dayDuration:120,nightDuration:30,totalDays:2,cameraZoom:1},lastActivity:Date.now(),players:{[state.uid]:p}});await enterLocal(c,name,p,true)}catch(e){screens.home?.classList.remove("fade-out");status("Erro ao criar: "+e.message,true)}}
+async function createRoom(){try{if(!homeAssetsReady)return status("Aguarde o carregamento dos recursos da tela inicial.",true);const name=clean($("playerName").value);if(!name)return status("Digite seu nome.",true);let c=null;for(let i=0;i<24;i++){const candidate=code();if(!(await db.ref(`${ROOT}/rooms/${candidate}`).once("value")).exists()){c=candidate;break}}if(!c)throw Error("Não foi possível gerar um código livre. Tente novamente.");const p=playerData(name,0);await db.ref(`${ROOT}/rooms/${c}`).set({createdAt:serverTime(),hostId:state.uid,authorityEpoch:1,status:"lobby",settings:{maxPlayers:6,speed:115,difficulty:"normal",dayDuration:120,nightDuration:30,totalDays:2,cameraZoom:1,npcsEnabled:true,npcCount:8},lastActivity:Date.now(),players:{[state.uid]:p}});await enterLocal(c,name,p,true)}catch(e){screens.home?.classList.remove("fade-out");status("Erro ao criar: "+e.message,true)}}
 function playerData(name,index){const s=MAP.spawn[index%MAP.spawn.length],l=lobbySpawn(index);return{name,skin:storedPlayerSkin(),color:["#58c979","#5da8ff","#e4b34f","#db6e6e","#b985ef","#5ed4cf","#ef8fb6","#a9d35b"][index%8],ready:false,alive:true,isZombie:false,zombieTransformStartedAt:null,deathCause:null,health:100,x:s[0],y:s[1],vx:0,vy:0,moving:false,facing:1,lobbyX:l.x,lobbyY:l.y,lobbyVx:0,lobbyVy:0,lobbyMoving:false,lobbyFacing:1,equippedWeapon:null,weapons:{axe:false,syringe:false,ak:false,katana:false},attackStartedAt:0,attackDirX:1,attackDirY:0,akFiring:false,akFireStartedAt:0,akShotAt:0,cureStartedAt:0,cureDuration:0,curedAt:0,attackedAt:0,knockbackAt:0,knockbackX:null,knockbackY:null,knockbackDuration:0,vehicleId:null,vehicleSeat:null,vehicleJoinedAt:0,vehicleExitAt:0,resources:{wood:0,stone:0,metal:0},stats:{collected:0,built:0},assetsReady:false,voiceEnabled:false,joinedAt:serverTime(),lastSeen:Date.now(),connected:true,disconnectedAt:0,connectionSessionId:null,offlineSessionId:null}}
 async function joinRoom(){try{if(!homeAssetsReady)return status("Aguarde o carregamento dos recursos da tela inicial.",true);await cleanupStaleRooms();const name=clean($("playerName").value),c=$("roomCodeInput").value.trim().toUpperCase();if(!name||c.length!==3)return status("Informe nome e código de 3 caracteres.",true);const snap=await db.ref(`${ROOT}/rooms/${c}`).once("value");if(!snap.exists())throw Error("Sala não encontrada.");const room=snap.val();if(room.status!=="lobby")throw Error("A partida já começou.");const ps=room.players||{};if(!ps[state.uid]&&Object.keys(ps).length>=Number(room.settings?.maxPlayers||6))throw Error("Sala cheia.");let localPlayer=ps[state.uid]||null;if(!localPlayer){localPlayer=playerData(name,Object.keys(ps).length);await db.ref(`${ROOT}/rooms/${c}/players/${state.uid}`).set(localPlayer)}enterLocal(c,name,localPlayer)}catch(e){status("Não foi possível entrar: "+e.message,true)}}
 async function enterLocal(c,name,seedPlayer=null,animateFromHome=false){cleanup();closeHomeSettingsPanel();state.leaving=false;state.pageExitPrepared=false;state.playerMissing=false;state.membershipRecoveryPromise=null;state.roomCode=c;state.name=name;renewPresenceSession();const initialSkin=normalizePlayerSkin(seedPlayer?.skin??storedPlayerSkin());state.lastKnownPlayer=seedPlayer?{...seedPlayer,skin:initialSkin}:null;state.lobbyPositionRoom=null;state.lobbyRemote={};localStorage.setItem("zombie_name",name);localStorage.setItem("zombie_skin",initialSkin);state.roomRef=db.ref(`${ROOT}/rooms/${c}`);state.playerRef=state.roomRef.child(`players/${state.uid}`);armPlayerDisconnect();state.playerRef.update({skin:initialSkin,assetsReady:false,ready:false,voiceEnabled:false,connected:true,lastSeen:serverTime(),disconnectedAt:0,offlineSessionId:null,connectionSessionId:state.presenceSessionId}).catch(()=>{});$("roomCodeLabel").textContent=c;if(animateFromHome)await playScreenFade(screens.home,"fade-out");sw("lobby");requestGameFullscreen();setupLobbyCanvas();startPresence();attach();scheduleLobbyAssetLoading();if(animateFromHome){screens.lobby.classList.add("fade-in");await playScreenFade(screens.lobby,"fade-in");screens.lobby.classList.remove("fade-in")}}
@@ -1751,23 +1768,29 @@ function playerRealtimeActive(player,now=Date.now()){
   return age<PLAYER_CONNECTED_STALE_MS
 }
 async function ensureActiveHost(){
-  if(state.hostClaimInFlight||!state.roomRef)return;
+  if(state.hostClaimInFlight||!state.roomRef||state.firebaseConnected===false)return;
   const now=Date.now(),current=state.room?.hostId;if(current&&playerRealtimeActive(state.players?.[current],now))return;
-  const candidates=Object.entries(state.players||{}).filter(([,p])=>playerRealtimeActive(p,now)).sort((a,b)=>Number(a[1].joinedAt||0)-Number(b[1].joinedAt||0));
-  const next=candidates[0]?.[0];if(!next)return;
   state.hostClaimInFlight=true;
-  try{await state.roomRef.child("hostId").transaction(value=>value&&playerRealtimeActive(state.players?.[value],Date.now())?value:next)}finally{state.hostClaimInFlight=false}
+  try{
+    await state.roomRef.transaction(room=>{
+      if(!room)return room;const players=room.players||{},hostId=room.hostId;
+      if(hostId&&playerRealtimeActive(players[hostId],Date.now()))return;
+      const candidates=Object.entries(players).filter(([,p])=>playerRealtimeActive(p,Date.now())).sort((a,b)=>Number(a[1].joinedAt||0)-Number(b[1].joinedAt||0));
+      const next=candidates[0]?.[0];if(!next)return;
+      room.hostId=next;room.authorityEpoch=Math.max(1,Number(room.authorityEpoch||0)+1);return room
+    },undefined,false)
+  }finally{state.hostClaimInFlight=false}
 }
 async function refreshRealtimeState(force=false){
   if(!state.roomRef||state.resyncInFlight)return false;
   const now=Date.now();if(!force&&now-Number(state.lastRealtimeResync||0)<1400)return false;
   state.resyncInFlight=true;state.lastRealtimeResync=now;
   try{
-    const paths=["players","zombies","vehicles","vehicleMotion","structures","resources","weaponDrops","attackEvents","vehicleEvents"];
-    const snapshots=await Promise.all(paths.map(path=>state.roomRef.child(path).once("value")));
+    const paths=["players","npcs","clans","clanCommands","dialogueSessions","dialogueRequests","zombies","vehicles","vehicleMotion","structures","resources","weaponDrops","attackEvents","vehicleEvents"];
+    const [roomSnapshot,...snapshots]=await Promise.all([state.roomRef.once("value"),...paths.map(path=>state.roomRef.child(path).once("value"))]),core=roomSnapshot.val()||{};
     const values=Object.fromEntries(paths.map((path,index)=>[path,snapshots[index].val()||{}]));
-    state.room.players=values.players;state.players=values.players;state.room.zombies=values.zombies;state.vehicleMetadata=values.vehicles;state.room.vehicleMotion=values.vehicleMotion;state.room.structures=values.structures;state.room.resources=values.resources;state.room.weaponDrops=values.weaponDrops;state.room.attackEvents=values.attackEvents;state.room.vehicleEvents=values.vehicleEvents;
-    rebuildAllVehicleStates();if(!updateLocalPlayerFromSnapshot())return false;syncVisuals();updateWeaponUI();return true
+    state.room={...(state.room||{}),...core};state.room.players=values.players;state.players=values.players;state.room.npcs=values.npcs;state.npcs=values.npcs;state.room.clans=values.clans;state.clans=values.clans;state.room.clanCommands=values.clanCommands;state.clanCommands=values.clanCommands;state.room.dialogueSessions=values.dialogueSessions;state.dialogueSessions=values.dialogueSessions;state.room.dialogueRequests=values.dialogueRequests;state.dialogueRequests=values.dialogueRequests;state.room.zombies=values.zombies;state.vehicleMetadata=values.vehicles;state.room.vehicleMotion=values.vehicleMotion;state.room.structures=values.structures;state.room.resources=values.resources;state.room.weaponDrops=values.weaponDrops;state.room.attackEvents=values.attackEvents;state.room.vehicleEvents=values.vehicleEvents;state.authorityEpoch=Number(core.authorityEpoch||0);state.matchId=core.matchId||null;state.host=core.hostId===state.uid;
+    rebuildAllVehicleStates();if(!updateLocalPlayerFromSnapshot())return false;syncVisuals();syncNPCVisuals();updateWeaponUI();renderClanEntryButtons();return true
   }catch(error){console.warn("Falha ao recuperar sincronização em tempo real.",error);return false}
   finally{state.resyncInFlight=false}
 }
@@ -1906,25 +1929,32 @@ function drawVoiceSpeakingIndicator(ctx,uid,x,y,size=14){if(!uid||!state.voiceSp
 async function attach(){
   try{
     const initial=await state.roomRef.once("value");if(!initial.exists()){leave(false);return}
-    state.room=initial.val()||{};state.room.vehicleMotion=state.room.vehicleMotion||{};state.vehicleMetadata={...(state.room.vehicles||{})};rebuildAllVehicleStates();if(!updateLocalPlayerFromSnapshot())return;
-    syncVisuals();renderLobby();processRoom();ensureActiveHost();attachVoiceSignaling();
+    state.room=initial.val()||{};state.room.vehicleMotion=state.room.vehicleMotion||{};state.vehicleMetadata={...(state.room.vehicles||{})};state.npcs=state.room.npcs||{};state.clans=state.room.clans||{};state.clanCommands=state.room.clanCommands||{};state.dialogueSessions=state.room.dialogueSessions||{};state.dialogueRequests=state.room.dialogueRequests||{};state.authorityEpoch=Number(state.room.authorityEpoch||0);state.matchId=state.room.matchId||null;rebuildAllVehicleStates();if(!updateLocalPlayerFromSnapshot())return;
+    syncVisuals();syncNPCVisuals();renderLobby();renderClanEntryButtons();processRoom();ensureActiveHost();attachVoiceSignaling();
     const bind=(path,handler)=>{const ref=state.roomRef.child(path),callback=ref.on("value",snapshot=>handler(snapshot.val(),snapshot));state.listeners.push([ref,"value",callback])};
     const bindCollection=(path,onUpsert,onRemove)=>{const ref=state.roomRef.child(path);for(const event of ["child_added","child_changed"]){const callback=ref.on(event,snapshot=>onUpsert(snapshot.key,snapshot.val()));state.listeners.push([ref,event,callback])}const removed=ref.on("child_removed",snapshot=>onRemove(snapshot.key,snapshot.val()));state.listeners.push([ref,"child_removed",removed])};
     bind("status",value=>{if(value===null){leave(false);return}state.room.status=value;processRoom();if(value==="lobby"||value==="starting")renderLobby()});
     bind("hostId",value=>{state.room.hostId=value;state.host=value===state.uid;if(state.room.status==="lobby"||state.room.status==="starting"){renderLobby();if(state.room.status==="starting")startLobbyCountdown()}ensureActiveHost()});
+    bind("authorityEpoch",value=>{state.room.authorityEpoch=Number(value||0);state.authorityEpoch=Number(value||0);if(state.host)resetNPCBrainCache()});
+    bind("matchId",value=>{state.room.matchId=value||null;state.matchId=value||null});
     bind("settings",value=>{state.room.settings=value||{};state.cameraZoom=Math.max(1,Math.min(3,Number(state.room.settings.cameraZoom||1)));if(state.room.status==="lobby"||state.room.status==="starting")renderLobby()});
-    for(const field of ["phase","phaseEndsAt","roundStartedAt","startedPlayerCount","currentDay","winner","survivors","survivorIds","lastZombieSpawn","endedAt"]){bind(field,value=>{state.room[field]=value})}
+    for(const field of ["phase","phaseEndsAt","roundStartedAt","startedPlayerCount","startedSurvivorCount","currentDay","winner","survivors","survivorIds","lastZombieSpawn","endedAt"]){bind(field,value=>{state.room[field]=value})}
     bind("countdownStartedAt",value=>{state.room.countdownStartedAt=value;if(state.room.status==="starting")startLobbyCountdown()});
     bindCollection("players",(uid,value)=>{state.room.players=state.room.players||{};state.room.players[uid]=value;if(!updateLocalPlayerFromSnapshot())return;syncPlayerVisuals();syncVehicleVisuals();syncLobbyVisuals();reconcileVoicePeers();prefetchVisiblePlayerSkins();if(state.room.status==="lobby"||state.room.status==="starting")renderLobby();else updateWeaponUI();ensureActiveHost()},uid=>{if(uid===state.uid){state.playerMissing=true;if(state.lastKnownPlayer){state.room.players=state.room.players||{};state.room.players[uid]=state.lastKnownPlayer;state.players=state.room.players;state.me=state.lastKnownPlayer}if(!state.leaving&&!state.pageExitPrepared)recoverLocalMembership("child-removed");return}closeVoicePeer(uid);if(state.room.players)delete state.room.players[uid];updateLocalPlayerFromSnapshot();syncPlayerVisuals();syncVehicleVisuals();syncLobbyVisuals();reconcileVoicePeers();if(state.room.status==="lobby"||state.room.status==="starting")renderLobby();ensureActiveHost()});
+    bindCollection("npcs",(id,value)=>{state.room.npcs=state.room.npcs||{};state.room.npcs[id]=value;state.npcs=state.room.npcs;syncNPCVisuals();prefetchVisibleNPCSkins();renderClanEntryButtons();if(!$("clanOverlay")?.classList.contains("hidden"))renderClanMenu()},id=>{if(state.room.npcs)delete state.room.npcs[id];state.npcs=state.room.npcs||{};delete state.npcVisuals[id];delete state.npcBrains[id];renderClanEntryButtons();if(state.activeDialogueNpcId===id)closeNPCDialogue("O sobrevivente não está mais disponível.");if(!$("clanOverlay")?.classList.contains("hidden"))renderClanMenu()});
+    bindCollection("clans",(id,value)=>{state.room.clans=state.room.clans||{};state.room.clans[id]=value;state.clans=state.room.clans;renderClanEntryButtons();if(!$("clanOverlay")?.classList.contains("hidden"))renderClanMenu()},id=>{if(state.room.clans)delete state.room.clans[id];state.clans=state.room.clans||{};renderClanEntryButtons();if(!$("clanOverlay")?.classList.contains("hidden"))renderClanMenu()});
+    bind("clanCommands",value=>{state.room.clanCommands=value||{};state.clanCommands=state.room.clanCommands});
+    bind("dialogueSessions",value=>{state.room.dialogueSessions=value||{};state.dialogueSessions=state.room.dialogueSessions});
+    bind("dialogueRequests",value=>{state.room.dialogueRequests=value||{};state.dialogueRequests=state.room.dialogueRequests;refreshActiveDialogue()});
     bindCollection("zombies",(id,value)=>{state.room.zombies=state.room.zombies||{};state.room.zombies[id]=value;syncZombieVisuals()},id=>{if(state.room.zombies)delete state.room.zombies[id];delete state.zombieVisuals[id]});
     bindCollection("vehicles",(id,value)=>{state.vehicleMetadata=state.vehicleMetadata||{};state.vehicleMetadata[id]=value||{};rebuildVehicleState(id);syncVehicleVisuals()},id=>{if(state.vehicleMetadata)delete state.vehicleMetadata[id];if(state.room.vehicles)delete state.room.vehicles[id];delete state.vehicleVisuals[id];if(state.localVehicleId===id){state.localVehicleId=null;state.localVehicle=null}});
     bindCollection("vehicleMotion",(id,value)=>{state.room.vehicleMotion=state.room.vehicleMotion||{};state.room.vehicleMotion[id]=value||{};rebuildVehicleState(id);syncVehicleVisuals()},id=>{if(state.room.vehicleMotion)delete state.room.vehicleMotion[id];rebuildVehicleState(id);syncVehicleVisuals()});
-    bindCollection("structures",(id,value)=>{state.room.structures=state.room.structures||{};state.room.structures[id]=value},id=>{if(state.room.structures)delete state.room.structures[id]});
+    bindCollection("structures",(id,value)=>{state.room.structures=state.room.structures||{};state.room.structures[id]=value;state.npcNavVersion++},id=>{if(state.room.structures)delete state.room.structures[id];state.npcNavVersion++});
     bind("resources",value=>{state.room.resources=value||{};syncResourceVisuals()});
     bind("weaponDrops",value=>{state.room.weaponDrops=value||{}});
     bindCollection("attackEvents",(id,value)=>{state.room.attackEvents=state.room.attackEvents||{};state.room.attackEvents[id]=value;if(value?.weapon==="ak")queueAkBulletVisual(id,value)},id=>{if(state.room.attackEvents)delete state.room.attackEvents[id]});
     bind("vehicleEvents",value=>{state.room.vehicleEvents=value||{}});
-    const connectedRef=db.ref(".info/connected"),connectedCb=connectedRef.on("value",snapshot=>{if(snapshot.val()===true&&!state.leaving&&!state.pageExitPrepared){renewPresenceSession();armPlayerDisconnect().finally(()=>heartbeat().finally(()=>refreshRealtimeState(true)))}});state.listeners.push([connectedRef,"value",connectedCb]);
+    const connectedRef=db.ref(".info/connected"),connectedCb=connectedRef.on("value",snapshot=>{const connected=snapshot.val()===true;state.firebaseConnected=false;if(connected&&!state.leaving&&!state.pageExitPrepared){renewPresenceSession();armPlayerDisconnect().then(()=>heartbeat()).then(()=>refreshRealtimeState(true)).then(()=>{state.firebaseConnected=true;ensureActiveHost()}).catch(error=>{console.warn("Falha ao restaurar a conexão da sala.",error);state.firebaseConnected=true})}});state.listeners.push([connectedRef,"value",connectedCb]);
     const chatRef=state.roomRef.child("chat").limitToLast(50),chatCb=chatRef.on("value",snapshot=>renderMessages(snapshot.val()));state.listeners.push([chatRef,"value",chatCb]);
     const gameChatRef=state.roomRef.child("gameChat").limitToLast(40),gameChatCb=gameChatRef.on("child_added",snapshot=>receiveGameSpeech(snapshot.key,snapshot.val()));state.listeners.push([gameChatRef,"child_added",gameChatCb])
   }catch(error){console.warn("Não foi possível sincronizar a sala.",error);status("Falha ao sincronizar a partida.",true)}
@@ -1973,19 +2003,19 @@ function processRoom(){
     state.resultLoading=false;state.returningToLobby=false;$("backLobbyBtn").disabled=false;closeSkinShop();closeLobbyChat();closeLobbySettings();stopLobbyLoop();
     if(screens.game.classList.contains("hidden")){if(requiredGameAssetsReady())startGame();else ensureAssetsBeforeGameStart()}
   }else if(state.room.status==="ended"){
-    closeSkinShop();closeLobbyChat();closeLobbySettings();stopLobbyLoop();showResult()
+    closeSkinShop();closeLobbyChat();closeLobbySettings();closeClanMenu();closeNPCDialogue();stopLobbyLoop();showResult()
   }else if(state.room.status==="starting"){
     closeSkinShop();clearZombieMarker();closeWeaponWheel();closeGameSettings();closeGameChat();closeLobbyChat();closeLobbySettings();state.ending=false;state.resultLoading=false;state.returningToLobby=false;$("backLobbyBtn").disabled=false;
     state.localVehicle=null;state.localVehicleId=null;state.vehicleVisuals={};state.vehicleMetadata={};state.zombieCorpses={};if(state.room)state.room.vehicleMotion={};
     $("resultOverlay").classList.add("hidden");stopLoop();sw("lobby");startLobbyExperience();renderLobby();startLobbyCountdown()
   }else if(state.room.status==="lobby"){
-    cancelLobbyCountdown(true);clearZombieMarker();closeWeaponWheel();closeGameSettings();closeGameChat();state.speechBubbles={};state.seenSpeechIds.clear();state.ending=false;state.resultLoading=false;state.returningToLobby=false;$("backLobbyBtn").disabled=false;
+    cancelLobbyCountdown(true);clearZombieMarker();closeWeaponWheel();closeGameSettings();closeGameChat();closeClanMenu();closeNPCDialogue();state.npcs={};state.npcVisuals={};state.clans={};resetNPCBrainCache();state.speechBubbles={};state.seenSpeechIds.clear();state.ending=false;state.resultLoading=false;state.returningToLobby=false;$("backLobbyBtn").disabled=false;
     state.localVehicle=null;state.localVehicleId=null;state.vehicleVisuals={};state.vehicleMetadata={};state.zombieCorpses={};if(state.room)state.room.vehicleMotion={};
     $("resultOverlay").classList.add("hidden");stopLoop();sw("lobby");startLobbyExperience();renderLobby()
   }
 }
 function setLobbySettingsEditable(editable){
-  for(const id of ["maxPlayers","playerSpeed","difficulty","dayDuration","nightDuration","totalDays","cameraZoom"]){const input=$(id);if(input)input.disabled=!editable}
+  for(const id of ["maxPlayers","playerSpeed","difficulty","dayDuration","nightDuration","totalDays","cameraZoom","npcsEnabled","npcCount"]){const input=$(id);if(input)input.disabled=!editable}
   document.querySelectorAll("#hostSettings .stepper-btn").forEach(button=>button.disabled=!editable)
 }
 function renderLobby(){
@@ -1996,11 +2026,11 @@ function renderLobby(){
   const readyBtn=$("readyBtn");readyBtn.disabled=starting||!localLoaded;readyBtn.textContent=!localLoaded?"Carregando recursos…":starting?"Partida iniciando…":state.me?.ready?"Cancelar pronto":"Estou pronto";readyBtn.classList.toggle("ready",!!state.me?.ready);
   const everyoneLoaded=ents.length>=1&&ents.every(([,p])=>p.assetsReady===true),everyoneReady=everyoneLoaded&&ents.every(([,p])=>p.ready),can=!starting&&state.host&&everyoneReady&&lobbyAssetsReady&&requiredGameAssetsReady();
   const startBtn=$("startGameBtn");startBtn.disabled=!can;startBtn.classList.toggle("local-ready",!!state.me?.ready);startBtn.classList.toggle("can-start",can);startBtn.setAttribute("aria-label",starting?"Partida iniciando":!state.host?"Somente o dono pode iniciar":!everyoneLoaded?"Aguardando carregamento dos jogadores":!everyoneReady?"Aguardando todos ficarem prontos":"Iniciar partida");startBtn.title=startBtn.getAttribute("aria-label");
-  $("maxPlayers").value=maxPlayers;$("playerSpeed").value=normalizePlayerSpeed(settings.speed??PLAYER_SPEED_VALUES.slow);$("difficulty").value=settings.difficulty||"normal";$("dayDuration").value=Math.max(15,Math.min(600,Number(settings.dayDuration||120)));$("nightDuration").value=Math.max(15,Math.min(600,Number(settings.nightDuration||30)));$("totalDays").value=Math.max(1,Math.min(30,Number(settings.totalDays||2)));const zoom=Math.max(1,Math.min(3,Number(settings.cameraZoom||1)));$("cameraZoom").value=zoom;state.cameraZoom=zoom;
+  $("maxPlayers").value=maxPlayers;$("playerSpeed").value=normalizePlayerSpeed(settings.speed??PLAYER_SPEED_VALUES.slow);$("difficulty").value=settings.difficulty||"normal";$("dayDuration").value=Math.max(15,Math.min(600,Number(settings.dayDuration||120)));$("nightDuration").value=Math.max(15,Math.min(600,Number(settings.nightDuration||30)));$("totalDays").value=Math.max(1,Math.min(30,Number(settings.totalDays||2)));const zoom=Math.max(1,Math.min(3,Number(settings.cameraZoom||1))),npcsEnabled=settings.npcsEnabled!==false,npcCount=Math.max(NPC_MIN_COUNT,Math.min(NPC_MAX_COUNT,Number(settings.npcCount||8)));$("cameraZoom").value=zoom;$("npcsEnabled").value=String(npcsEnabled);$("npcCount").value=npcCount;$("npcCountField")?.classList.toggle("disabled",!npcsEnabled);state.cameraZoom=zoom;
   setLobbySettingsEditable(state.host&&!starting);$("lobbySettingsNote").textContent=state.host?(starting?"A partida está iniciando. As configurações foram bloqueadas.":"Você é o dono da partida e pode alterar estas opções."):`Somente ${hostName} pode alterar as opções da partida.`
   renderSkinShop()
 }
-async function saveSettings(){if(!state.host||state.room?.status!=="lobby")return;await state.roomRef.child("settings").update({maxPlayers:Number($("maxPlayers").value),speed:normalizePlayerSpeed($("playerSpeed").value),difficulty:$("difficulty").value,dayDuration:Math.max(15,Math.min(600,Number($("dayDuration").value)||120)),nightDuration:Math.max(15,Math.min(600,Number($("nightDuration").value)||30)),totalDays:Math.max(1,Math.min(30,Number($("totalDays").value)||2)),cameraZoom:Math.max(1,Math.min(3,Number($("cameraZoom").value)||1))})}
+async function saveSettings(){if(!state.host||state.room?.status!=="lobby")return;const npcsEnabled=$("npcsEnabled").value!=="false";$("npcCountField")?.classList.toggle("disabled",!npcsEnabled);await state.roomRef.child("settings").update({maxPlayers:Number($("maxPlayers").value),speed:normalizePlayerSpeed($("playerSpeed").value),difficulty:$("difficulty").value,dayDuration:Math.max(15,Math.min(600,Number($("dayDuration").value)||120)),nightDuration:Math.max(15,Math.min(600,Number($("nightDuration").value)||30)),totalDays:Math.max(1,Math.min(30,Number($("totalDays").value)||2)),cameraZoom:Math.max(1,Math.min(3,Number($("cameraZoom").value)||1)),npcsEnabled,npcCount:Math.max(NPC_MIN_COUNT,Math.min(NPC_MAX_COUNT,Number($("npcCount").value)||8))})}
 function adjustNumericSetting(id,delta){
   if(!state.host||state.room?.status!=="lobby")return;const input=$(id);if(!input)return;
   const min=Number(input.min||-Infinity),max=Number(input.max||Infinity),current=Number(input.value||0),next=Math.max(min,Math.min(max,current+Number(delta||0)));
@@ -2042,12 +2072,12 @@ async function finalizeMatchStart(token){
     const snapshot=await state.roomRef.once("value"),latest=snapshot.val();
     if(!latest||latest.status!=="starting"||Number(latest.countdownStartedAt||0)!==Number(token)||latest.hostId!==state.uid)return;
     const ps=Object.entries(latest.players||{});if(!ps.length)return;
-    const settings=latest.settings||{},now=Date.now(),day=Math.max(15,Math.min(600,Number(settings.dayDuration||120))),selectedDifficulty=settings.difficulty||"normal";
+    const settings=latest.settings||{},now=Date.now(),day=Math.max(15,Math.min(600,Number(settings.dayDuration||120))),selectedDifficulty=settings.difficulty||"normal",matchId=`${Number(token)}-${Math.random().toString(36).slice(2,8)}`,npcsEnabled=settings.npcsEnabled!==false,npcCount=npcsEnabled?Math.max(NPC_MIN_COUNT,Math.min(NPC_MAX_COUNT,Number(settings.npcCount||8))):0,npcData=npcsEnabled?createNPCSpawnData(npcCount,ps.length,matchId):null;
     const resourceData=createResourceData(selectedDifficulty),weaponDropData=createWeaponDropData(),vehicleData=createVehicleData(weaponDropData),vehicleMotionData=createVehicleMotionData(vehicleData);
-    const updates={status:"playing",countdownStartedAt:null,phase:"day",phaseEndsAt:now+day*1000,roundStartedAt:serverTime(),startedPlayerCount:ps.length,currentDay:1,zombies:null,resources:resourceData,weaponDrops:weaponDropData,vehicles:vehicleData,vehicleMotion:vehicleMotionData,structures:null,winner:null,survivors:null,survivorIds:null,endedAt:null,lastZombieSpawn:null,attackEvents:null,vehicleEvents:null,gameChat:null};
+    const updates={status:"playing",countdownStartedAt:null,phase:"day",phaseEndsAt:now+day*1000,roundStartedAt:serverTime(),matchId,startedPlayerCount:ps.length,startedSurvivorCount:ps.length+npcCount,currentDay:1,zombies:null,npcs:npcData,clans:null,clanCommands:null,dialogueSessions:null,dialogueRequests:null,bases:null,resources:resourceData,weaponDrops:weaponDropData,vehicles:vehicleData,vehicleMotion:vehicleMotionData,structures:null,winner:null,survivors:null,survivorIds:null,endedAt:null,lastZombieSpawn:null,attackEvents:null,vehicleEvents:null,gameChat:null};
     ps.forEach(([uid,p],i)=>{
       const s=MAP.spawn[i%MAP.spawn.length],starterWeapons=starterWeaponsForSkin(p?.skin);
-      updates[`players/${uid}/ready`]=false;updates[`players/${uid}/alive`]=true;updates[`players/${uid}/isZombie`]=false;updates[`players/${uid}/zombieTransformStartedAt`]=null;updates[`players/${uid}/deathCause`]=null;updates[`players/${uid}/health`]=100;updates[`players/${uid}/x`]=s[0];updates[`players/${uid}/y`]=s[1];updates[`players/${uid}/vx`]=0;updates[`players/${uid}/vy`]=0;updates[`players/${uid}/moving`]=false;updates[`players/${uid}/equippedWeapon`]=null;updates[`players/${uid}/weapons`]=starterWeapons;updates[`players/${uid}/attackStartedAt`]=0;updates[`players/${uid}/attackDirX`]=1;updates[`players/${uid}/attackDirY`]=0;updates[`players/${uid}/akFiring`]=false;updates[`players/${uid}/akFireStartedAt`]=0;updates[`players/${uid}/akShotAt`]=0;updates[`players/${uid}/cureStartedAt`]=0;updates[`players/${uid}/cureDuration`]=0;updates[`players/${uid}/curedAt`]=0;updates[`players/${uid}/attackedAt`]=0;updates[`players/${uid}/knockbackAt`]=0;updates[`players/${uid}/knockbackX`]=null;updates[`players/${uid}/knockbackY`]=null;updates[`players/${uid}/knockbackDuration`]=0;updates[`players/${uid}/vehicleId`]=null;updates[`players/${uid}/vehicleSeat`]=null;updates[`players/${uid}/vehicleJoinedAt`]=0;updates[`players/${uid}/vehicleExitAt`]=0;updates[`players/${uid}/resources`]={wood:0,stone:0,metal:0};updates[`players/${uid}/stats`]={collected:0,built:0}
+      updates[`players/${uid}/ready`]=false;updates[`players/${uid}/alive`]=true;updates[`players/${uid}/isZombie`]=false;updates[`players/${uid}/clanId`]=null;updates[`players/${uid}/zombieTransformStartedAt`]=null;updates[`players/${uid}/deathCause`]=null;updates[`players/${uid}/health`]=100;updates[`players/${uid}/x`]=s[0];updates[`players/${uid}/y`]=s[1];updates[`players/${uid}/vx`]=0;updates[`players/${uid}/vy`]=0;updates[`players/${uid}/moving`]=false;updates[`players/${uid}/equippedWeapon`]=null;updates[`players/${uid}/weapons`]=starterWeapons;updates[`players/${uid}/attackStartedAt`]=0;updates[`players/${uid}/attackDirX`]=1;updates[`players/${uid}/attackDirY`]=0;updates[`players/${uid}/akFiring`]=false;updates[`players/${uid}/akFireStartedAt`]=0;updates[`players/${uid}/akShotAt`]=0;updates[`players/${uid}/cureStartedAt`]=0;updates[`players/${uid}/cureDuration`]=0;updates[`players/${uid}/curedAt`]=0;updates[`players/${uid}/attackedAt`]=0;updates[`players/${uid}/knockbackAt`]=0;updates[`players/${uid}/knockbackX`]=null;updates[`players/${uid}/knockbackY`]=null;updates[`players/${uid}/knockbackDuration`]=0;updates[`players/${uid}/vehicleId`]=null;updates[`players/${uid}/vehicleSeat`]=null;updates[`players/${uid}/vehicleJoinedAt`]=0;updates[`players/${uid}/vehicleExitAt`]=0;updates[`players/${uid}/resources`]={wood:0,stone:0,metal:0};updates[`players/${uid}/stats`]={collected:0,built:0}
     });
     clearZombieMarker();await state.roomRef.update(updates)
   }catch(e){
@@ -2087,6 +2117,29 @@ function createVehicleMotionData(vehicles={}){
   const data={};
   for(const [id,vehicle] of Object.entries(vehicles||{}))data[id]={x:Number(vehicle.x||0),y:Number(vehicle.y||0),vx:Number(vehicle.vx||0),vy:Number(vehicle.vy||0),speed:Number(vehicle.speed||0),dirX:Number(vehicle.dirX||1),dirY:Number(vehicle.dirY||0),facing:Number(vehicle.facing||1),moving:!!vehicle.moving,impactAt:Number(vehicle.impactAt||0),seq:0,clientAt:Date.now(),serverAt:serverTime()};
   return data
+}
+
+function createNPCSpawnData(count,playerCount=0,matchId=""){
+  const npcs={},skinUse={},points=(MAP.spawn||[]).slice(0,playerCount).map(([x,y])=>({x,y}));
+  for(let index=0;index<count;index++){
+    const id=`npc${index+1}`,skin=NPC_SKINS[index%NPC_SKINS.length],skinIndex=skinUse[skin]||0;skinUse[skin]=skinIndex+1;
+    let x=MAP.bounds.left+140+((index*347)%Math.max(200,MAP.bounds.right-MAP.bounds.left-280)),y=MAP.bounds.top+150+((index*233)%Math.max(200,MAP.bounds.bottom-MAP.bounds.top-300)),attempt=0;
+    while(attempt++<80&&(hitObstacle(x,y,28)||points.some(point=>Math.hypot(x-point.x,y-point.y)<105))){x=MAP.bounds.left+90+Math.random()*(MAP.bounds.right-MAP.bounds.left-180);y=MAP.bounds.top+90+Math.random()*(MAP.bounds.bottom-MAP.bounds.top-180)}
+    points.push({x,y});const mood=NPC_MOODS[Math.floor(Math.random()*NPC_MOODS.length)],weapons=starterWeaponsForSkin(skin);
+    npcs[id]={id,entityType:"npc",matchId,skin,outlineColor:NPC_OUTLINE_COLORS[skinIndex%NPC_OUTLINE_COLORS.length],name:null,mood,health:100,maxHealth:100,alive:true,x:Math.round(x),y:Math.round(y),vx:0,vy:0,moving:false,facing:1,equippedWeapon:null,weapons,resources:{wood:0,stone:0,metal:0},stats:{collected:0,built:0},clanId:null,currentState:"IDLE",currentTarget:null,homeId:null,home:null,followTarget:null,lastAttackerType:null,lastAttackerId:null,lastAttackedAt:0,attackStartedAt:0,attackDirX:1,attackDirY:0,akFiring:false,akFireStartedAt:0,akShotAt:0,attackedAt:0,knockbackAt:0,knockbackX:null,knockbackY:null,knockbackDuration:0,lastDecisionAt:0,lastSyncedAt:0,authorityEpoch:Number(state.room?.authorityEpoch||state.authorityEpoch||1)}
+  }
+  return npcs
+}
+function resetNPCBrainCache(){state.npcBrains={};state.npcNavCache=null;state.npcLastStep=0;state.npcLastSync=0}
+function prefetchVisibleNPCSkins(){for(const npc of Object.values(state.npcs||{}))for(const group of skinAssetGroups(npc?.skin))ensureAssetGroupReady(group,false).catch(()=>{})}
+function syncNPCVisuals(){
+  const now=performance.now(),npcs=state.npcs||{};
+  for(const [id,npc] of Object.entries(npcs)){
+    if(!npc)continue;const x=Number(npc.x||0),y=Number(npc.y||0),vx=Number(npc.vx||0),vy=Number(npc.vy||0),v=state.npcVisuals[id],attackedAt=Number(npc.attackedAt||0),knockbackAt=Number(npc.knockbackAt||0),hasTarget=npc.knockbackX!=null&&npc.knockbackY!=null;
+    if(!v)state.npcVisuals[id]={x,y,tx:x,ty:y,vx,vy,moving:!!npc.moving,facing:Number(npc.facing||1),sampleAt:now,lastAttackedAt:attackedAt,lastKnockbackAt:knockbackAt,damageFlashAt:0,knockback:null};
+    else{if(attackedAt>Number(v.lastAttackedAt||0))v.damageFlashAt=Date.now();v.lastAttackedAt=attackedAt;v.sampleAt=now;v.tx=x;v.ty=y;v.vx=vx;v.vy=vy;v.moving=!!npc.moving;v.facing=Number(npc.facing||v.facing||1);if(hasTarget&&knockbackAt>Number(v.lastKnockbackAt||0)){v.lastKnockbackAt=knockbackAt;beginVisualKnockback(v,Number(npc.knockbackX),Number(npc.knockbackY),Number(npc.knockbackDuration||220),now)}}
+  }
+  for(const id of Object.keys(state.npcVisuals))if(!npcs[id])delete state.npcVisuals[id]
 }
 const VEHICLE_MOTION_FIELDS=new Set(["x","y","vx","vy","speed","dirX","dirY","facing","moving","impactAt","seq","clientAt","serverAt"]);
 function rebuildVehicleState(id){
@@ -2236,7 +2289,7 @@ function syncResourceVisuals(){
 }
 function startGame(){
   closeSkinShop();stopLobbyLoop();closeLobbyChat();closeLobbySettings();
-  setBuildMode(false);closeWeaponWheel();closeGameSettings();closeGameChat();state.speechBubbles={};state.seenSpeechIds.clear();state.gameChatSendTimes=[];state.lastGameChatSendAt=0;state.attackCooldowns={};state.eliminationDropAt={};state.zombieCorpses={};state.collectingWeaponDrops.clear();state.droppingWeapons.clear();state.weaponSlotDrag=null;document.querySelectorAll(".weapon-drag-ghost").forEach(node=>node.remove());state.hostTickBusy=false;state.processingAttacks=false;state.vehicleHitCooldowns={};state.vehicleWallCooldowns={};state.vehicleEventBusy=false;state.localVehicle=null;state.localVehicleId=null;state.lastVehicleSync=0;state.lastHostTickAt=0;state.lastDrawAt=0;state.weaponUiSignature="";
+  setBuildMode(false);closeWeaponWheel();closeGameSettings();closeGameChat();closeClanMenu();closeNPCDialogue();state.npcs=state.room?.npcs||{};state.clans=state.room?.clans||{};state.speechBubbles={};state.seenSpeechIds.clear();state.gameChatSendTimes=[];state.lastGameChatSendAt=0;state.attackCooldowns={};state.eliminationDropAt={};state.zombieCorpses={};state.collectingWeaponDrops.clear();state.droppingWeapons.clear();state.weaponSlotDrag=null;document.querySelectorAll(".weapon-drag-ghost").forEach(node=>node.remove());state.hostTickBusy=false;state.processingAttacks=false;state.vehicleHitCooldowns={};state.vehicleWallCooldowns={};state.vehicleEventBusy=false;state.localVehicle=null;state.localVehicleId=null;state.lastVehicleSync=0;state.lastHostTickAt=0;state.lastDrawAt=0;state.weaponUiSignature="";resetNPCBrainCache();syncNPCVisuals();prefetchVisibleNPCSkins();
   const equipped=state.me?.equippedWeapon;state.selectedWeapon=equipped&&hasWeapon(equipped)&&!(isLocalZombie()&&(MELEE_WEAPON_TYPES.has(equipped)||equipped==="ak"))?equipped:null;state.localAttackStartedAt=0;state.lastAxeAttackAt=0;state.attackSequence=0;state.localAkFireStartedAt=0;state.localAkShotAt=0;state.localAkDirX=Number(state.me?.attackDirX||1);state.localAkDirY=Number(state.me?.attackDirY||0);state.akTriggerHeld=false;state.akKeyboardFiring=false;state.akAttackPointerId=null;state.akShotSequence=0;state.bulletVisuals=[];state.seenAttackVisualIds.clear();state.localCureStartedAt=Number(state.me?.cureStartedAt||0);state.cureInFlight=false;state.lastKnockbackAppliedAt=Number(state.me?.knockbackAt||0);state.lastLocalAttackedAt=Number(state.me?.attackedAt||0);state.localDamageFlashAt=0;state.localKnockback=null;state.nightVisionScale=isLocalZombie()?1.48:1.12;state.vehicleLightScale=1;state.vehicleCameraScale=1;state.viewTransitionAt=performance.now();state.nightQualityScale=1;state.fpsWindowStarted=performance.now();state.fpsFrames=0;
   state.localAkRawDirX=state.localAkDirX;state.localAkRawDirY=state.localAkDirY;state.akAssistTargetKind=null;state.akAssistTargetId=null;state.akAssistTargetUntil=0;
   if(state.pendingAxeImpactTimer)clearTimeout(state.pendingAxeImpactTimer);state.pendingAxeImpactTimer=null;if(state.akFireTimer)clearTimeout(state.akFireTimer);state.akFireTimer=null;if(state.pendingCureTimer)clearTimeout(state.pendingCureTimer);state.pendingCureTimer=null;
@@ -2460,6 +2513,9 @@ function update(dt,now){
       if(v.attackQueued){v.attackStartedAt=now;v.attackQueued=false}else v.attackStartedAt=0
     }
   }
+  for(const v of Object.values(state.npcVisuals||{})){
+    if(advanceVisualKnockback(v,now))continue;const target=predictedVisualTarget(v,now,NPC_PREDICTION_MS,190),blend=1-Math.exp(-15*dt);v.x+=(target.x-v.x)*blend;v.y+=(target.y-v.y)*blend
+  }
   for(const v of Object.values(state.vehicleVisuals)){
     const target=predictedVisualTarget(v,now,VEHICLE_PREDICTION_MS,260),blend=1-Math.exp(-(target.packetAge>420?9:16)*dt);v.x+=(target.x-v.x)*blend;v.y+=(target.y-v.y)*blend
   }
@@ -2539,6 +2595,7 @@ function update(dt,now){
       facing:firingAk?(state.localAkDirX<-.05?-1:state.localAkDirX>.05?1:Number(state.me?.facing||1)):attacking?state.localAttackFacing:(state.dirX<-.05?-1:state.dirX>.05?1:Number(state.me?.facing||1))
     }).catch(()=>{})
   }
+  if(state.activeDialogueNpcId){const npc=state.npcs?.[state.activeDialogueNpcId];if(!npc||Math.hypot(state.localX-Number(npc.x||0),state.localY-Number(npc.y||0))>NPC_DIALOGUE_BREAK_DISTANCE)closeNPCDialogue("A conversa terminou porque vocês se afastaram.")}
   hostTick(now);updateHUD()
 }
 const WALL_LEVELS={1:{hp:160,cost:{wood:8,stone:0,metal:0}},2:{hp:300,cost:{wood:12,stone:8,metal:0}},3:{hp:520,cost:{wood:10,stone:14,metal:3}},4:{hp:850,cost:{wood:0,stone:18,metal:10}}};
@@ -2728,6 +2785,7 @@ async function performInteraction(){
   const vehicleAction=nearestVehicleInteraction();
   if(vehicleAction?.type==="exitVehicle")return exitCurrentVehicle();
   if(vehicleAction)return enterVehicle(vehicleAction.id);
+  const npc=nearestConversableNPC();if(npc)return openNPCDialogue(npc.id);
   return toggleNearestDoor()
 }
 async function emitVehicleWallImpact(vehicleId,structureId,speed,vehicle){
@@ -2830,6 +2888,7 @@ async function processVehicleEntityImpacts(now=Date.now()){
   if(!state.host||now-Number(state.lastVehicleCollisionStep||0)<95)return false;state.lastVehicleCollisionStep=now;
   const vehicles=Object.fromEntries(Object.entries(state.room?.vehicles||{}).map(([id,v])=>[id,{...v}]));
   const players=Object.fromEntries(Object.entries(state.players||{}).map(([id,v])=>[id,{...v}]));
+  const npcs=Object.fromEntries(Object.entries(state.npcs||{}).map(([id,v])=>[id,{...v}]));
   const zombies=Object.fromEntries(Object.entries(state.room?.zombies||{}).map(([id,v])=>[id,{...v}]));
   const structures=Object.fromEntries(Object.entries(state.room?.structures||{}).map(([id,v])=>[id,{...v}]));
   const updates={};
@@ -2839,6 +2898,7 @@ async function processVehicleEntityImpacts(now=Date.now()){
     const occupantIds=new Set(vehicleOccupantIds(vehicle)),speed=Number(vehicle.speed||0);
     for(const [uid,player] of Object.entries(players)){
       if(!player||occupantIds.has(uid)||player.vehicleId||player.alive===false||player.isZombie===true||now-Number(player.vehicleExitAt||0)<900)continue;
+      if(vehicle.driverId&&sameClan("player",vehicle.driverId,"player",uid))continue;
       const hitDistance=Math.hypot(Number(player.x||0)-Number(vehicle.x||0),Number(player.y||0)-Number(vehicle.y||0)),hitRadius=CAR_ENTITY_HIT_RADIUS+18;
       if(hitDistance>hitRadius)continue;
       const damage=vehicleImpactDamage(speed,hitDistance,hitRadius,vehicle);
@@ -2846,7 +2906,20 @@ async function processVehicleEntityImpacts(now=Date.now()){
       const pushed=vehicleKnockbackPosition(player,vehicle,structures,13),health=damage>0?Math.max(0,Number(player.health??100)-damage):Number(player.health??100),knockbackDuration=knockbackTweenDuration(Math.hypot(pushed.x-Number(player.x||0),pushed.y-Number(player.y||0)));
       player.x=pushed.x;player.y=pushed.y;player.health=health;player.attackedAt=now;player.knockbackAt=now;player.knockbackX=pushed.x;player.knockbackY=pushed.y;player.knockbackDuration=knockbackDuration;player.vx=0;player.vy=0;player.moving=false;
       updates[`players/${uid}/x`]=pushed.x;updates[`players/${uid}/y`]=pushed.y;updates[`players/${uid}/vx`]=0;updates[`players/${uid}/vy`]=0;updates[`players/${uid}/moving`]=false;updates[`players/${uid}/attackedAt`]=now;updates[`players/${uid}/knockbackAt`]=now;updates[`players/${uid}/knockbackX`]=pushed.x;updates[`players/${uid}/knockbackY`]=pushed.y;updates[`players/${uid}/knockbackDuration`]=knockbackDuration;if(damage>0)updates[`players/${uid}/health`]=health;
-      if(health<=0){player.alive=false;appendPlayerInventoryDrops(uid,player,structures,updates,now);updates[`players/${uid}/alive`]=false;updates[`players/${uid}/isZombie`]=false;updates[`players/${uid}/zombieTransformStartedAt`]=null;updates[`players/${uid}/moving`]=false;updates[`players/${uid}/vx`]=0;updates[`players/${uid}/vy`]=0;updates[`players/${uid}/deathCause`]="vehicle";updates[`players/${uid}/killedBy`]=vehicle.driverId||null}
+      if(health<=0){player.alive=false;appendPlayerInventoryDrops(uid,player,structures,updates,now);appendPlayerClanDeath(uid,player,updates);updates[`players/${uid}/alive`]=false;updates[`players/${uid}/isZombie`]=false;updates[`players/${uid}/zombieTransformStartedAt`]=null;updates[`players/${uid}/moving`]=false;updates[`players/${uid}/vx`]=0;updates[`players/${uid}/vy`]=0;updates[`players/${uid}/deathCause`]="vehicle";updates[`players/${uid}/killedBy`]=vehicle.driverId||null}
+      vehicle.speed*=damage>0?.80:.93;changed=true
+    }
+    for(const [npcId,npc] of Object.entries(npcs)){
+      if(!npc||npc.alive===false)continue;
+      if(vehicle.driverId&&sameClan("player",vehicle.driverId,"npc",npcId))continue;
+      const hitDistance=Math.hypot(Number(npc.x||0)-Number(vehicle.x||0),Number(npc.y||0)-Number(vehicle.y||0)),hitRadius=CAR_ENTITY_HIT_RADIUS+NPC_RADIUS;
+      if(hitDistance>hitRadius)continue;
+      const damage=vehicleImpactDamage(speed,hitDistance,hitRadius,vehicle);
+      const key=`${vehicleId}:n:${npcId}`,cooldown=damage>0?CAR_IMPACT_COOLDOWN:220;if(now-Number(state.vehicleHitCooldowns[key]||0)<cooldown)continue;state.vehicleHitCooldowns[key]=now;
+      const pushed=vehicleKnockbackPosition(npc,vehicle,structures,13),health=damage>0?Math.max(0,Number(npc.health??100)-damage):Number(npc.health??100),knockbackDuration=knockbackTweenDuration(Math.hypot(pushed.x-Number(npc.x||0),pushed.y-Number(npc.y||0)));
+      npc.x=pushed.x;npc.y=pushed.y;npc.health=health;npc.attackedAt=now;npc.knockbackAt=now;npc.knockbackX=pushed.x;npc.knockbackY=pushed.y;npc.knockbackDuration=knockbackDuration;npc.vx=0;npc.vy=0;npc.moving=false;npc.lastAttackerType="player";npc.lastAttackerId=vehicle.driverId||null;npc.lastAttackedAt=now;
+      updates[`npcs/${npcId}/x`]=pushed.x;updates[`npcs/${npcId}/y`]=pushed.y;updates[`npcs/${npcId}/vx`]=0;updates[`npcs/${npcId}/vy`]=0;updates[`npcs/${npcId}/moving`]=false;updates[`npcs/${npcId}/attackedAt`]=now;updates[`npcs/${npcId}/knockbackAt`]=now;updates[`npcs/${npcId}/knockbackX`]=pushed.x;updates[`npcs/${npcId}/knockbackY`]=pushed.y;updates[`npcs/${npcId}/knockbackDuration`]=knockbackDuration;updates[`npcs/${npcId}/lastAttackerType`]="player";updates[`npcs/${npcId}/lastAttackerId`]=vehicle.driverId||null;updates[`npcs/${npcId}/lastAttackedAt`]=now;if(damage>0)updates[`npcs/${npcId}/health`]=health;
+      if(health<=0)appendNPCDeath(npcId,npc,updates,"vehicle",vehicle.driverId||null,now);
       vehicle.speed*=damage>0?.80:.93;changed=true
     }
     for(const [zombieId,zombie] of Object.entries(zombies)){
@@ -2925,8 +2998,100 @@ async function updateUncontrolledVehicles(now=Date.now()){
   }
   if(Object.keys(updates).length){state.roomRef.update(updates).catch(error=>console.warn("Falha ao reconciliar veículos.",error));return true}return changed
 }
+function actorRecord(kind,id){return kind==="npc"?state.npcs?.[id]:state.players?.[id]}
+function actorClanId(kind,id,record=actorRecord(kind,id)){return record?.clanId||null}
+function clanForActor(kind,id,record=actorRecord(kind,id)){const clanId=actorClanId(kind,id,record);return clanId?state.clans?.[clanId]||null:null}
+function actorIsAlive(kind,id,record=actorRecord(kind,id)){return!!record&&(kind==="npc"?record.alive!==false:record.alive!==false&&!record.isZombie)}
+function sameClan(kindA,idA,kindB,idB){const a=actorClanId(kindA,idA),b=actorClanId(kindB,idB);return!!(a&&b&&a===b)}
+function clansAreRivals(clanAId,clanBId){if(!clanAId||!clanBId||clanAId===clanBId)return false;const a=state.clans?.[clanAId],b=state.clans?.[clanBId];return!!(a&&b&&(a.peaceful===false&&a.rivalClanId===clanBId||b.peaceful===false&&b.rivalClanId===clanAId))}
+function actorRelationship(kindA,idA,kindB,idB){if(kindA===kindB&&idA===idB)return"ALLY";if(sameClan(kindA,idA,kindB,idB))return"ALLY";const a=actorClanId(kindA,idA),b=actorClanId(kindB,idB);return clansAreRivals(a,b)?"RIVAL":"NEUTRAL"}
+function playerMayDamageNPC(playerId,npcId){return actorRelationship("player",playerId,"npc",npcId)!=="ALLY"}
+function playerMayDamagePlayer(attackerId,targetId){return actorRelationship("player",attackerId,"player",targetId)!=="ALLY"}
+function npcMayAttackActor(npcId,targetKind,targetId){const npc=state.npcs?.[npcId],clan=clanForActor("npc",npcId,npc);if(!npc||npc.alive===false||clan?.peaceful!==false)return false;return actorRelationship("npc",npcId,targetKind,targetId)==="RIVAL"}
+function npcCanDamageActor(npcId,targetKind,targetId){const npc=state.npcs?.[npcId],clan=clanForActor("npc",npcId,npc),retaliating=npc?.lastAttackerType===targetKind&&npc?.lastAttackerId===targetId&&Date.now()-Number(npc?.lastAttackedAt||0)<12000;return npcMayAttackActor(npcId,targetKind,targetId)||retaliating&&(!clan||clan.peaceful!==true)}
+
+function npcBrain(id,npc){return state.npcBrains[id]||(state.npcBrains[id]={nextDecisionAt:0,path:[],pathTargetKey:"",lastX:Number(npc.x||0),lastY:Number(npc.y||0),lastProgressAt:Date.now(),wanderX:null,wanderY:null,attackAt:0,doorAt:0,collecting:false,building:false})}
+function npcNavigationGrid(){
+  const cached=state.npcNavCache;if(cached&&cached.version===state.npcNavVersion)return cached;const b=MAP.bounds,cell=NPC_NAV_CELL,cols=Math.ceil((b.right-b.left)/cell),rows=Math.ceil((b.bottom-b.top)/cell),blocked=new Uint8Array(cols*rows);
+  for(let gy=0;gy<rows;gy++)for(let gx=0;gx<cols;gx++){const x=b.left+(gx+.5)*cell,y=b.top+(gy+.5)*cell;if(collision(x,y,NPC_RADIUS+2))blocked[gy*cols+gx]=1}
+  return state.npcNavCache={version:state.npcNavVersion,b,cell,cols,rows,blocked}
+}
+function npcNavCell(grid,x,y){return{x:Math.max(0,Math.min(grid.cols-1,Math.floor((Number(x)-grid.b.left)/grid.cell))),y:Math.max(0,Math.min(grid.rows-1,Math.floor((Number(y)-grid.b.top)/grid.cell)))}}
+function npcNavPoint(grid,cell){return{x:grid.b.left+(cell.x+.5)*grid.cell,y:grid.b.top+(cell.y+.5)*grid.cell}}
+function npcLineClear(ax,ay,bx,by,r=NPC_RADIUS){const distance=Math.hypot(bx-ax,by-ay),steps=Math.max(1,Math.ceil(distance/22));for(let i=1;i<=steps;i++){const t=i/steps;if(collision(ax+(bx-ax)*t,ay+(by-ay)*t,r))return false}return true}
+function npcFindPath(startX,startY,targetX,targetY){
+  if(npcLineClear(startX,startY,targetX,targetY))return[{x:targetX,y:targetY}];const grid=npcNavigationGrid(),start=npcNavCell(grid,startX,startY),goal=npcNavCell(grid,targetX,targetY),key=(x,y)=>y*grid.cols+x,startKey=key(start.x,start.y),goalKey=key(goal.x,goal.y);if(grid.blocked[goalKey]){let found=null;for(let radius=1;radius<=3&&!found;radius++)for(let y=goal.y-radius;y<=goal.y+radius&&!found;y++)for(let x=goal.x-radius;x<=goal.x+radius;x++){if(x<0||y<0||x>=grid.cols||y>=grid.rows)continue;if(!grid.blocked[key(x,y)]){found={x,y};break}}if(!found)return[];goal.x=found.x;goal.y=found.y}
+  const open=[{x:start.x,y:start.y,g:0,f:Math.hypot(goal.x-start.x,goal.y-start.y)}],came=new Map(),cost=new Map([[startKey,0]]),closed=new Set(),directions=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];let loops=0,finalKey=null;
+  while(open.length&&loops++<1800){open.sort((a,b)=>a.f-b.f);const current=open.shift(),currentKey=key(current.x,current.y);if(closed.has(currentKey))continue;closed.add(currentKey);if(current.x===goal.x&&current.y===goal.y){finalKey=currentKey;break}for(const [dx,dy] of directions){const x=current.x+dx,y=current.y+dy;if(x<0||y<0||x>=grid.cols||y>=grid.rows)continue;const nextKey=key(x,y);if(grid.blocked[nextKey]||closed.has(nextKey))continue;if(dx&&dy&&(grid.blocked[key(current.x+dx,current.y)]||grid.blocked[key(current.x,current.y+dy)]))continue;const g=current.g+(dx&&dy?1.414:1);if(g>=Number(cost.get(nextKey)??Infinity))continue;cost.set(nextKey,g);came.set(nextKey,currentKey);open.push({x,y,g,f:g+Math.hypot(goal.x-x,goal.y-y)})}}
+  if(finalKey===null)return[];const cells=[];let cursor=finalKey;while(cursor!==startKey&&came.has(cursor)){cells.push({x:cursor%grid.cols,y:Math.floor(cursor/grid.cols)});cursor=came.get(cursor)}cells.reverse();const points=cells.map(cell=>npcNavPoint(grid,cell));points.push({x:targetX,y:targetY});const simplified=[];let anchor={x:startX,y:startY};for(let i=0;i<points.length;i++){let far=i;for(let j=i+1;j<points.length&&npcLineClear(anchor.x,anchor.y,points[j].x,points[j].y);j++)far=j;simplified.push(points[far]);anchor=points[far];i=far}return simplified
+}
+function npcMoveToward(id,npc,targetX,targetY,dt,speedMultiplier=1){
+  const brain=npcBrain(id,npc),targetKey=`${Math.round(targetX/22)}:${Math.round(targetY/22)}:${state.npcNavVersion}`;if(brain.pathTargetKey!==targetKey||!brain.path.length||Date.now()-brain.lastProgressAt>NPC_STUCK_MS){brain.path=npcFindPath(npc.x,npc.y,targetX,targetY);brain.pathTargetKey=targetKey;brain.lastProgressAt=Date.now()}
+  let point=brain.path[0]||{x:targetX,y:targetY};if(Math.hypot(point.x-npc.x,point.y-npc.y)<20){brain.path.shift();point=brain.path[0]||{x:targetX,y:targetY}}
+  let dx=point.x-Number(npc.x||0),dy=point.y-Number(npc.y||0),length=Math.hypot(dx,dy);if(length<3){npc.vx=0;npc.vy=0;npc.moving=false;return true}dx/=length;dy/=length;let separateX=0,separateY=0;for(const [otherId,other] of Object.entries(state.npcs||{})){if(otherId===id||!other||other.alive===false)continue;let ox=Number(npc.x)-Number(other.x),oy=Number(npc.y)-Number(other.y),distance=Math.hypot(ox,oy);if(distance>=38)continue;if(distance<.01){ox=String(id)<String(otherId)?-1:1;oy=String(id)<String(otherId)?-.35:.35;distance=Math.hypot(ox,oy)}const strength=(38-distance)/38;separateX+=ox/distance*strength;separateY+=oy/distance*strength}dx+=separateX*1.15;dy+=separateY*1.15;length=Math.hypot(dx,dy)||1;dx/=length;dy/=length;const speed=normalizePlayerSpeed(state.room?.settings?.speed)*Math.max(.35,Math.min(1.15,speedMultiplier)),step=speed*dt,previousX=Number(npc.x||0),previousY=Number(npc.y||0),nx=previousX+dx*step,ny=previousY+dy*step;if(!collision(nx,previousY,NPC_RADIUS))npc.x=nx;if(!collision(Number(npc.x),ny,NPC_RADIUS))npc.y=ny;
+  const moved=Math.hypot(Number(npc.x)-previousX,Number(npc.y)-previousY);npc.vx=moved>.1?dx*speed:0;npc.vy=moved>.1?dy*speed:0;npc.moving=moved>.1;if(Math.abs(dx)>.05)npc.facing=dx<0?-1:1;if(Math.hypot(Number(npc.x)-brain.lastX,Number(npc.y)-brain.lastY)>12){brain.lastX=Number(npc.x);brain.lastY=Number(npc.y);brain.lastProgressAt=Date.now()}return Math.hypot(targetX-Number(npc.x),targetY-Number(npc.y))<24
+}
+function npcMoveAway(id,npc,threatX,threatY,dt){let dx=Number(npc.x)-Number(threatX),dy=Number(npc.y)-Number(threatY),length=Math.hypot(dx,dy)||1;dx/=length;dy/=length;const distance=240,targetX=Math.max(MAP.bounds.left+30,Math.min(MAP.bounds.right-30,Number(npc.x)+dx*distance)),targetY=Math.max(MAP.bounds.top+30,Math.min(MAP.bounds.bottom-30,Number(npc.y)+dy*distance));return npcMoveToward(id,npc,targetX,targetY,dt,1.12)}
+function npcEntityPosition(kind,id){if(kind==="zombie"){const z=state.room?.zombies?.[id];return z?{x:Number(z.x),y:Number(z.y)}:null}const actor=actorRecord(kind,id);return actor?{x:Number(actor.x),y:Number(actor.y)}:null}
+function npcThreats(id,npc){
+  const threats=[];for(const [zid,zombie] of Object.entries(state.room?.zombies||{})){if(!zombie)continue;const distance=Math.hypot(Number(zombie.x)-Number(npc.x),Number(zombie.y)-Number(npc.y));if(distance<560)threats.push({kind:"zombie",id:zid,x:Number(zombie.x),y:Number(zombie.y),distance,canAttack:true})}
+  for(const [uid,player] of Object.entries(state.players||{})){if(!actorIsAlive("player",uid,player))continue;const retaliate=npc.lastAttackerType==="player"&&npc.lastAttackerId===uid&&Date.now()-Number(npc.lastAttackedAt||0)<12000,clan=clanForActor("npc",id,npc),canAttack=npcMayAttackActor(id,"player",uid)||retaliate&&(!clan||clan.peaceful!==true),hostile=canAttack||retaliate;if(!hostile)continue;const distance=Math.hypot(Number(player.x)-Number(npc.x),Number(player.y)-Number(npc.y));if(distance<650)threats.push({kind:"player",id:uid,x:Number(player.x),y:Number(player.y),distance,canAttack})}
+  for(const [otherId,other] of Object.entries(state.npcs||{})){if(otherId===id||other?.alive===false)continue;const retaliate=npc.lastAttackerType==="npc"&&npc.lastAttackerId===otherId&&Date.now()-Number(npc.lastAttackedAt||0)<12000,clan=clanForActor("npc",id,npc),canAttack=npcMayAttackActor(id,"npc",otherId)||retaliate&&(!clan||clan.peaceful!==true),hostile=canAttack||retaliate;if(!hostile)continue;const distance=Math.hypot(Number(other.x)-Number(npc.x),Number(other.y)-Number(npc.y));if(distance<650)threats.push({kind:"npc",id:otherId,x:Number(other.x),y:Number(other.y),distance,canAttack})}
+  return threats.sort((a,b)=>a.distance-b.distance)
+}
+function npcBestWeapon(npc){if(npc.weapons?.ak)return"ak";if(npc.weapons?.katana&&normalizePlayerSkin(npc.skin)==="michonne")return"katana";if(npc.weapons?.axe)return"axe";return null}
+function npcNearestCollectible(npc){let best=null,distance=Infinity;for(const [id,r] of Object.entries(state.room?.resources||{})){if(!r||r.claimedBy)continue;const d=Math.hypot(Number(r.x)-Number(npc.x),Number(r.y)-Number(npc.y));if(d<distance&&d<760){distance=d;best={kind:"resource",id,x:Number(r.x),y:Number(r.y),distance}}}if(!npcBestWeapon(npc))for(const [id,drop] of Object.entries(state.room?.weaponDrops||{})){if(!drop||drop.claimedBy||!DROPPABLE_WEAPON_TYPES.has(drop.type)||npc.weapons?.[drop.type])continue;const d=Math.hypot(Number(drop.x)-Number(npc.x),Number(drop.y)-Number(npc.y));if(d<distance&&d<760){distance=d;best={kind:"weapon",id,x:Number(drop.x),y:Number(drop.y),distance}}}return best}
+function npcClanFollowTarget(id,npc){const clan=clanForActor("npc",id,npc);if(!clan||clan.followLeader!==true)return null;const kind=clan.leaderType||"player",leaderId=clan.leaderId;if(!leaderId||kind==="npc"&&leaderId===id)return null;const leader=actorRecord(kind,leaderId);if(!leader||!actorIsAlive(kind,leaderId,leader))return null;const numeric=Math.max(1,Number(String(id).replace(/\D/g,""))||1),angle=(numeric%8)/8*Math.PI*2,radius=58+Math.floor(numeric/8)*28;return{kind,id:leaderId,x:Number(leader.x)+Math.cos(angle)*radius,y:Number(leader.y)+Math.sin(angle)*radius}}
+function npcInsideHome(npc){const home=npc?.home;if(!home)return false;return Math.abs(Number(npc.x)-Number(home.x))<=Number(home.halfW||70)&&Math.abs(Number(npc.y)-Number(home.y))<=Number(home.halfH||70)}
+function npcUpgradeableHomeWall(npc){for(const id of npc?.home?.structureIds||[]){const wall=state.room?.structures?.[id],level=Number(wall?.level||1);if(!wall||wall.type==="door"||level>=4)continue;const cost=WALL_LEVELS[level+1]?.cost;if(cost&&hasCost(npc.resources||{},cost))return{id,wall,level,cost}}return null}
+function decideNPCState(id,npc,now){
+  const brain=npcBrain(id,npc),threats=npcThreats(id,npc),session=state.dialogueSessions?.[id],phase=state.room?.phase||"day",remaining=Number(state.room?.phaseEndsAt||now)-now;let activeThreats=threats;if(npc.home&&(phase==="night"||phase==="dawn")&&npcInsideHome(npc)){activeThreats=threats.filter(threat=>Math.abs(Number(threat.x)-Number(npc.home.x))<=Number(npc.home.halfW||70)&&Math.abs(Number(threat.y)-Number(npc.home.y))<=Number(npc.home.halfH||70));if(!activeThreats.length){npc.currentState="CLOSE_DOOR";npc.currentTarget=null;return}}const nearest=activeThreats[0],danger=nearest&&nearest.distance<150;
+  if(session&&Number(session.expiresAt||0)>now&&!danger){npc.currentState="TALKING";npc.currentTarget={kind:"player",id:session.playerId};return}
+  if(nearest&&(nearest.canAttack===false||Number(npc.health||0)<=NPC_LOW_HEALTH||activeThreats.filter(t=>t.distance<260).length>=3||!npcBestWeapon(npc))){npc.currentState="FLEE";npc.currentTarget={kind:nearest.kind,id:nearest.id};return}
+  if(nearest&&nearest.distance<520&&npcBestWeapon(npc)){npc.currentState="ATTACK";npc.currentTarget={kind:nearest.kind,id:nearest.id};return}
+  if(npc.home&&(phase==="night"||phase==="dawn"||phase==="day"&&remaining<14000)){npc.currentState=npcInsideHome(npc)?"CLOSE_DOOR":"RETURN_HOME";npc.currentTarget=null;return}
+  const follow=npcClanFollowTarget(id,npc);if(follow){npc.currentState="FOLLOW";npc.currentTarget={kind:follow.kind,id:follow.id};return}
+  if(!npc.home&&Number(npc.resources?.wood||0)>=68&&phase==="day"){npc.currentState="BUILD";npc.currentTarget=null;return}
+  const upgrade=npc.home&&phase==="day"?npcUpgradeableHomeWall(npc):null;if(upgrade){npc.currentState="BUILD";npc.currentTarget={kind:"structure",id:upgrade.id};return}
+  const collectible=npcNearestCollectible(npc);if(collectible){npc.currentState="COLLECT";npc.currentTarget={kind:collectible.kind,id:collectible.id};return}
+  if(!Number.isFinite(brain.wanderX)||Math.hypot(brain.wanderX-Number(npc.x),brain.wanderY-Number(npc.y))<35){brain.wanderX=MAP.bounds.left+45+Math.random()*(MAP.bounds.right-MAP.bounds.left-90);brain.wanderY=MAP.bounds.top+45+Math.random()*(MAP.bounds.bottom-MAP.bounds.top-90)}npc.currentState="EXPLORE";npc.currentTarget=null
+}
+async function npcCollectResource(npcId,resourceId){const brain=npcBrain(npcId,state.npcs?.[npcId]||{});if(brain.collecting||!state.host)return false;brain.collecting=true;const ref=state.roomRef.child(`resources/${resourceId}`),claimant=`npc:${npcId}`;try{const result=await ref.transaction(value=>{if(!value||value.claimedBy)return;return{...value,claimedBy:claimant,claimedAt:Date.now()}},undefined,false);if(!result.committed)return false;const resource=result.snapshot.val(),type=resource?.type,amount=Number(resource?.amount||1);if(!["wood","stone","metal"].includes(type))return false;await state.roomRef.update({[`resources/${resourceId}`]:null,[`npcs/${npcId}/resources/${type}`]:firebase.database.ServerValue.increment(amount),[`npcs/${npcId}/stats/collected`]:firebase.database.ServerValue.increment(amount)});return true}catch(error){console.warn("NPC não conseguiu coletar recurso.",error);return false}finally{brain.collecting=false}}
+async function npcCollectWeapon(npcId,dropId){const brain=npcBrain(npcId,state.npcs?.[npcId]||{});if(brain.collecting||!state.host)return false;brain.collecting=true;const ref=state.roomRef.child(`weaponDrops/${dropId}`),claimant=`npc:${npcId}`;try{const result=await ref.transaction(value=>{if(!value||value.claimedBy||Number(value.pickupAvailableAt||0)>Date.now())return;return{...value,claimedBy:claimant,claimedAt:Date.now()}},undefined,false);if(!result.committed)return false;const type=result.snapshot.val()?.type;if(!DROPPABLE_WEAPON_TYPES.has(type))return false;await state.roomRef.update({[`weaponDrops/${dropId}`]:null,[`npcs/${npcId}/weapons/${type}`]:true,[`npcs/${npcId}/equippedWeapon`]:type});return true}catch(error){console.warn("NPC não conseguiu coletar arma.",error);return false}finally{brain.collecting=false}}
+function npcBuildSegmentsValid(segments){return segments.length>0&&segments.every(segment=>{const box=structureBox(segment);if(mapBoundaryRectCollision(box))return false;for(const structure of Object.values(state.room?.structures||{}))if(structure&&rectsOverlap(box,structureBox(structure)))return false;for(const player of Object.values(state.players||{}))if(player&&player.alive!==false&&circleRect(Number(player.x),Number(player.y),22,box.x,box.y,box.w,box.h))return false;return true})}
+async function npcBuildHome(id,npc){const brain=npcBrain(id,npc);if(brain.building||npc.home||Number(npc.resources?.wood||0)<68)return false;brain.building=true;try{let center=null,segments=[];for(let attempt=0;attempt<20;attempt++){const angle=Math.random()*Math.PI*2,distance=70+Math.random()*120,x=Math.max(MAP.bounds.left+110,Math.min(MAP.bounds.right-110,Number(npc.x)+Math.cos(angle)*distance)),y=Math.max(MAP.bounds.top+110,Math.min(MAP.bounds.bottom-110,Number(npc.y)+Math.sin(angle)*distance));const candidate=fortressSegments("squareSmall",x,y);if(npcBuildSegmentsValid(candidate)){center={x,y};segments=candidate;break}}if(!center)return false;const updates={},ids=[];segments.forEach((segment,index)=>{const key=state.roomRef.child("structures").push().key;ids.push(key);updates[`structures/${key}`]={type:index===0?"door":"wall",open:false,x:Math.round(segment.x),y:Math.round(segment.y),orientation:segment.orientation,level:1,health:WALL_LEVELS[1].hp,maxHealth:WALL_LEVELS[1].hp,owner:id,ownerType:"npc",clanId:npc.clanId||null,baseId:`home:${id}`}});const home={x:Math.round(center.x),y:Math.round(center.y),halfW:66,halfH:66,doorId:ids[0],structureIds:ids};updates[`npcs/${id}/home`]=home;updates[`npcs/${id}/homeId`]=`home:${id}`;updates[`npcs/${id}/resources/wood`]=Math.max(0,Number(npc.resources?.wood||0)-68);updates[`npcs/${id}/stats/built`]=firebase.database.ServerValue.increment(ids.length);await state.roomRef.update(updates);npc.home=home;npc.resources.wood=Math.max(0,Number(npc.resources?.wood||0)-68);return true}catch(error){console.warn("NPC não conseguiu construir base.",error);return false}finally{brain.building=false}}
+async function npcUpgradeHomeWall(id,npc,structureId){const brain=npcBrain(id,npc);if(brain.building)return false;const wall=state.room?.structures?.[structureId],level=Number(wall?.level||1),next=level+1,cost=WALL_LEVELS[next]?.cost;if(!wall||wall.type==="door"||next>4||!cost||!hasCost(npc.resources||{},cost))return false;brain.building=true;try{const updates={[`structures/${structureId}/level`]:next,[`structures/${structureId}/health`]:WALL_LEVELS[next].hp,[`structures/${structureId}/maxHealth`]:WALL_LEVELS[next].hp,[`npcs/${id}/resources/wood`]:Number(npc.resources?.wood||0)-cost.wood,[`npcs/${id}/resources/stone`]:Number(npc.resources?.stone||0)-cost.stone,[`npcs/${id}/resources/metal`]:Number(npc.resources?.metal||0)-cost.metal};await state.roomRef.update(updates);return true}finally{brain.building=false}}
+async function npcSetDoor(npc,open){const doorId=npc?.home?.doorId,door=doorId?state.room?.structures?.[doorId]:null;if(!door||door.type!=="door"||door.open===open)return false;await state.roomRef.child(`structures/${doorId}/open`).set(open);return true}
+function npcLeaderSuccessor(clanId,excludingKind,excludingId){const players=Object.entries(state.players||{}).filter(([uid,p])=>p?.clanId===clanId&&actorIsAlive("player",uid,p)&&!(excludingKind==="player"&&uid===excludingId)).sort((a,b)=>Number(a[1].joinedAt||0)-Number(b[1].joinedAt||0));if(players.length)return{kind:"player",id:players[0][0]};const npcs=Object.entries(state.npcs||{}).filter(([id,n])=>n?.clanId===clanId&&n.alive!==false&&!(excludingKind==="npc"&&id===excludingId));return npcs.length?{kind:"npc",id:npcs[0][0]}:null}
+function appendPlayerClanDeath(uid,player,updates){const clanId=player?.clanId;if(!clanId)return;const clan=state.clans?.[clanId];updates[`players/${uid}/clanId`]=null;if(clan?.leaderType==="player"&&clan.leaderId===uid){const successor=npcLeaderSuccessor(clanId,"player",uid);if(successor){updates[`clans/${clanId}/leaderType`]=successor.kind;updates[`clans/${clanId}/leaderId`]=successor.id;if(successor.kind==="player")updates[`clans/${clanId}/managerUid`]=successor.id}else updates[`clans/${clanId}`]=null}}
+function appendNPCInventoryDrops(id,npc,structures,updates,now=Date.now()){if(!id||!npc)return;let index=0;for(const weapon of DROPPABLE_WEAPON_TYPES){if(npc.weapons?.[weapon]!==true)continue;const key=state.roomRef.child("weaponDrops").push().key,point=eliminationDropPoint(npc.x,npc.y,index++,structures,16);updates[`weaponDrops/${key}`]={type:weapon,x:point.x,y:point.y,sourceX:Number(npc.x),sourceY:Number(npc.y),droppedBy:`npc:${id}`,droppedAt:serverTime(),pickupAvailableAt:now+700}}for(const type of ["wood","stone","metal"]){const amount=Number(npc.resources?.[type]||0);if(amount<=0)continue;const key=state.roomRef.child("resources").push().key,point=eliminationDropPoint(npc.x,npc.y,index++,structures,14);updates[`resources/${key}`]={type,amount,x:point.x,y:point.y}}}
+function appendNPCDeath(id,npc,updates,cause="unknown",killer=null,now=Date.now()){if(!npc||npc.alive===false)return;appendNPCInventoryDrops(id,npc,state.room?.structures||{},updates,now);npc.alive=false;npc.health=0;npc.moving=false;updates[`npcs/${id}/alive`]=false;updates[`npcs/${id}/health`]=0;updates[`npcs/${id}/moving`]=false;updates[`npcs/${id}/vx`]=0;updates[`npcs/${id}/vy`]=0;updates[`npcs/${id}/deathCause`]=cause;updates[`npcs/${id}/killedBy`]=killer;updates[`npcs/${id}/diedAt`]=now;if(npc.clanId){const clan=state.clans?.[npc.clanId];if(clan?.leaderType==="npc"&&clan.leaderId===id){const successor=npcLeaderSuccessor(npc.clanId,"npc",id);if(successor){updates[`clans/${npc.clanId}/leaderType`]=successor.kind;updates[`clans/${npc.clanId}/leaderId`]=successor.id;if(successor.kind==="player")updates[`clans/${npc.clanId}/managerUid`]=successor.id}else updates[`clans/${npc.clanId}`]=null}updates[`npcs/${id}/clanId`]=null}}
+async function npcAttackTarget(id,npc,target,now){const brain=npcBrain(id,npc),weapon=npcBestWeapon(npc);if(!weapon||now-brain.attackAt<(weapon==="ak"?AK_FIRE_INTERVAL*2:650))return false;const targetPos=npcEntityPosition(target.kind,target.id);if(!targetPos)return false;const distance=Math.hypot(targetPos.x-Number(npc.x),targetPos.y-Number(npc.y)),range=weapon==="ak"?AK_RANGE:AXE_RANGE;if(distance>range||!npcLineClear(npc.x,npc.y,targetPos.x,targetPos.y,8))return false;brain.attackAt=now;const dir=normalizeAkDirection(targetPos.x-Number(npc.x),targetPos.y-Number(npc.y),Number(npc.facing||1)),updates={},damage=weapon==="ak"?{zombie:AK_ZOMBIE_DAMAGE,player:AK_PLAYER_DAMAGE,npc:AK_PLAYER_DAMAGE}:weapon==="katana"?{zombie:KATANA_ZOMBIE_DAMAGE,player:KATANA_PLAYER_DAMAGE,npc:KATANA_PLAYER_DAMAGE}:{zombie:AXE_ZOMBIE_DAMAGE,player:AXE_PLAYER_DAMAGE,npc:AXE_PLAYER_DAMAGE};npc.equippedWeapon=weapon;npc.attackStartedAt=now;npc.attackDirX=dir.x;npc.attackDirY=dir.y;npc.facing=dir.x<0?-1:1;updates[`npcs/${id}/equippedWeapon`]=weapon;updates[`npcs/${id}/attackStartedAt`]=now;updates[`npcs/${id}/attackDirX`]=dir.x;updates[`npcs/${id}/attackDirY`]=dir.y;updates[`npcs/${id}/facing`]=npc.facing;if(weapon==="ak"){updates[`npcs/${id}/akFireStartedAt`]=now;updates[`npcs/${id}/akShotAt`]=now}
+  if(target.kind==="zombie"){const entity=state.room?.zombies?.[target.id];if(!entity)return false;const health=Math.max(0,Number(entity.health??0)-damage.zombie);if(health<=0)updates[`zombies/${target.id}`]=null;else{updates[`zombies/${target.id}/health`]=health;updates[`zombies/${target.id}/attackedAt`]=now}}
+  else if(target.kind==="player"){const entity=state.players?.[target.id];if(!entity||!npcCanDamageActor(id,"player",target.id))return false;const health=Math.max(0,Number(entity.health??100)-damage.player);updates[`players/${target.id}/health`]=health;updates[`players/${target.id}/attackedAt`]=now;if(health<=0){appendPlayerInventoryDrops(target.id,{...entity,weapons:{...(entity.weapons||{})},resources:{...(entity.resources||{})}},state.room?.structures||{},updates,now);appendPlayerClanDeath(target.id,entity,updates);updates[`players/${target.id}/alive`]=false;updates[`players/${target.id}/isZombie`]=false;updates[`players/${target.id}/deathCause`]="npc";updates[`players/${target.id}/killedBy`]=id}}
+  else if(target.kind==="npc"){const entity=state.npcs?.[target.id];if(!entity||!npcCanDamageActor(id,"npc",target.id))return false;const health=Math.max(0,Number(entity.health??100)-damage.npc);entity.health=health;entity.lastAttackerType="npc";entity.lastAttackerId=id;entity.lastAttackedAt=now;updates[`npcs/${target.id}/health`]=health;updates[`npcs/${target.id}/attackedAt`]=now;updates[`npcs/${target.id}/lastAttackerType`]="npc";updates[`npcs/${target.id}/lastAttackerId`]=id;updates[`npcs/${target.id}/lastAttackedAt`]=now;if(health<=0)appendNPCDeath(target.id,entity,updates,"npc",id,now)}
+  const visualKey=state.roomRef.child("attackEvents").push().key;updates[`attackEvents/${visualKey}`]={attackerType:"npc",attackerId:id,visualOnly:true,weapon,sequence:now,x:Math.round(Number(npc.x)*10)/10,y:Math.round(Number(npc.y)*10)/10,dirX:dir.x,dirY:dir.y,facing:npc.facing,range:weapon==="ak"?Math.min(distance,AK_RANGE):AXE_RANGE,at:serverTime(),roundStartedAt:Number(state.room?.roundStartedAt||0)};await state.roomRef.update(updates);return true}
+function npcTargetFromCurrent(npc){const target=npc?.currentTarget;if(!target)return null;if(target.kind==="resource")return state.room?.resources?.[target.id]?{...target,x:Number(state.room.resources[target.id].x),y:Number(state.room.resources[target.id].y)}:null;if(target.kind==="weapon")return state.room?.weaponDrops?.[target.id]?{...target,x:Number(state.room.weaponDrops[target.id].x),y:Number(state.room.weaponDrops[target.id].y)}:null;const pos=npcEntityPosition(target.kind,target.id);return pos?{...target,...pos}:null}
+async function updateNPCs(now=Date.now()){
+  if(!state.host||state.room?.status!=="playing"||now-Number(state.npcLastStep||0)<NPC_SIM_INTERVAL)return;const dt=Math.min(.18,(now-Number(state.npcLastStep||now-NPC_SIM_INTERVAL))/1000);state.npcLastStep=now;const updates={};
+  for(const [id,npc] of Object.entries(state.npcs||{})){if(!npc||npc.alive===false||npc.matchId&&state.matchId&&npc.matchId!==state.matchId)continue;const brain=npcBrain(id,npc);if(now>=Number(brain.nextDecisionAt||0)){decideNPCState(id,npc,now);brain.nextDecisionAt=now+NPC_DECISION_MIN+Math.random()*(NPC_DECISION_MAX-NPC_DECISION_MIN)}let target=npcTargetFromCurrent(npc);
+    if(npc.currentState==="TALKING"){npc.vx=0;npc.vy=0;npc.moving=false}
+    else if(npc.currentState==="FLEE"&&target)npcMoveAway(id,npc,target.x,target.y,dt);
+    else if(npc.currentState==="ATTACK"&&target){const weapon=npcBestWeapon(npc),range=weapon==="ak"?Math.min(620,AK_RANGE):90;if(target&&Math.hypot(target.x-Number(npc.x),target.y-Number(npc.y))>range*.82)npcMoveToward(id,npc,target.x,target.y,dt,.92);else{npc.vx=0;npc.vy=0;npc.moving=false;npcAttackTarget(id,npc,target,now).catch(error=>console.warn("Ataque de NPC falhou.",error))}}
+    else if(npc.currentState==="RETURN_HOME"&&npc.home){npcSetDoor(npc,true).catch(()=>{});npcMoveToward(id,npc,Number(npc.home.x),Number(npc.home.y),dt,1.05);if(npcInsideHome(npc)){npc.currentState="CLOSE_DOOR";npcSetDoor(npc,false).catch(()=>{})}}
+    else if(npc.currentState==="CLOSE_DOOR"){npc.vx=0;npc.vy=0;npc.moving=false;if(now-brain.doorAt>900){brain.doorAt=now;npcSetDoor(npc,false).catch(()=>{})}}
+    else if(npc.currentState==="FOLLOW"){const follow=npcClanFollowTarget(id,npc);if(follow){if(Math.hypot(follow.x-Number(npc.x),follow.y-Number(npc.y))>38)npcMoveToward(id,npc,follow.x,follow.y,dt,1.02);else{npc.vx=0;npc.vy=0;npc.moving=false}}}
+    else if(npc.currentState==="COLLECT"&&target){if(Math.hypot(target.x-Number(npc.x),target.y-Number(npc.y))>18)npcMoveToward(id,npc,target.x,target.y,dt);else{npc.vx=0;npc.vy=0;npc.moving=false;if(target.kind==="resource")npcCollectResource(id,target.id);else npcCollectWeapon(id,target.id);brain.nextDecisionAt=0}}
+    else if(npc.currentState==="BUILD"){npc.vx=0;npc.vy=0;npc.moving=false;if(npc.currentTarget?.kind==="structure")npcUpgradeHomeWall(id,npc,npc.currentTarget.id);else npcBuildHome(id,npc);brain.nextDecisionAt=now+1800}
+    else if(npc.currentState==="EXPLORE")npcMoveToward(id,npc,brain.wanderX,brain.wanderY,dt,.72);
+    else{npc.vx=0;npc.vy=0;npc.moving=false}
+    if(now-Number(state.npcLastSync||0)>=NPC_SYNC_INTERVAL){updates[`npcs/${id}/x`]=Math.round(Number(npc.x)*10)/10;updates[`npcs/${id}/y`]=Math.round(Number(npc.y)*10)/10;updates[`npcs/${id}/vx`]=Math.round(Number(npc.vx||0)*10)/10;updates[`npcs/${id}/vy`]=Math.round(Number(npc.vy||0)*10)/10;updates[`npcs/${id}/moving`]=!!npc.moving;updates[`npcs/${id}/facing`]=Number(npc.facing||1);updates[`npcs/${id}/currentState`]=NPC_STATES.has(npc.currentState)?npc.currentState:"IDLE";updates[`npcs/${id}/currentTarget`]=npc.currentTarget||null;updates[`npcs/${id}/authorityEpoch`]=Number(state.authorityEpoch||0)}
+  }
+  if(Object.keys(updates).length){state.npcLastSync=now;state.roomRef.update(updates).catch(error=>console.warn("Falha ao sincronizar NPCs.",error))}
+}
+
 async function hostTick(now){
-  if(!state.host||state.ending||state.hostTickBusy||now-Number(state.lastHostTickAt||0)<HOST_TICK_INTERVAL)return;
+  if(!state.host||state.firebaseConnected===false||state.ending||state.hostTickBusy||now-Number(state.lastHostTickAt||0)<HOST_TICK_INTERVAL)return;
   state.lastHostTickAt=now;state.hostTickBusy=true;
   try{
     const room=state.room,phase=room.phase||"day";
@@ -2934,6 +3099,10 @@ async function hostTick(now){
     // Antes, qualquer impacto fazia o host retornar cedo e a simulação parecia
     // andar, parar e andar novamente.
     await processPlayerCures();
+    await updateNPCs(Date.now());
+    await processClanCommands();
+    await reconcileClanState(Date.now());
+    await processDialogueRequests();
     if(Object.keys(room.vehicleEvents||{}).length)await processVehicleEvents();
     await processVehicleEntityImpacts(Date.now());
     await updateUncontrolledVehicles(Date.now());
@@ -2950,7 +3119,7 @@ async function hostTick(now){
     }
     if(phase==="dawn"){await updateZombiesLeaving();return}
     if(phase==="night"){
-      const humans=Object.values(state.players||{}).filter(p=>p.alive!==false&&!p.isZombie);
+      const humans=[...Object.values(state.players||{}).filter(p=>p.alive!==false&&!p.isZombie),...Object.values(state.npcs||{}).filter(npc=>npc?.alive!==false)];
       const curingPlayers=Object.values(state.players||{}).filter(p=>p.isZombie===true&&Number(p.cureStartedAt||0)>0);
       const startedCount=Number(room.startedPlayerCount||Object.keys(state.players||{}).length||1);
       if(!humans.length){
@@ -3037,14 +3206,16 @@ async function updateZombies(d){
   const elapsed=Math.min(.18,(Date.now()-lastZombieWrite)/1000||ZOMBIE_TICK_INTERVAL/1000);
   lastZombieWrite=Date.now();
   const activeHumans=Object.entries(state.players||{}).filter(([,p])=>p.alive!==false&&!p.isZombie);
+  const activeNPCs=Object.entries(state.npcs||{}).filter(([,npc])=>npc?.alive!==false);
   const startedCount=Number(state.room?.startedPlayerCount||Object.keys(state.players||{}).length||1);
-  if(!activeHumans.length){
+  if(!activeHumans.length&&!activeNPCs.length){
     const soloZombie=startedCount<=1&&Object.values(state.players||{}).some(p=>p.isZombie===true);
     if(!soloZombie)await finishRound();
     return
   }
 
   const activeHumanIds=new Set(activeHumans.map(([uid])=>uid));
+  const activeNPCIds=new Set(activeNPCs.map(([id])=>id));
   const vehicleTargets=[],occupiedHumanIds=new Set();
   for(const [vehicleId,vehicle] of Object.entries(state.room?.vehicles||{})){
     if(!vehicle||vehicle.destroyed||Number(vehicle.health||0)<=0)continue;
@@ -3054,6 +3225,7 @@ async function updateZombies(d){
   }
   const walkingHumans=activeHumans.filter(([uid,p])=>!p.vehicleId&&!occupiedHumanIds.has(uid));
   const healthByUid=new Map(activeHumans.map(([uid,p])=>[uid,Number(p.health||100)]));
+  const healthByNPCId=new Map(activeNPCs.map(([id,npc])=>[id,Number(npc.health||100)]));
   const vehicleHealthById=new Map(vehicleTargets.map(({vehicleId,vehicle})=>[vehicleId,Number(vehicle.health??vehicleConfig(vehicle).maxHealth)]));
   const vehicles=Object.fromEntries(Object.entries(state.room?.vehicles||{}).map(([id,v])=>[id,{...v}]));
   const players=Object.fromEntries(Object.entries(state.players||{}).map(([id,v])=>[id,{...v}]));
@@ -3069,6 +3241,7 @@ async function updateZombies(d){
       const dd=Math.hypot(Number(p.x||0)-Number(z.x||0),Number(p.y||0)-Number(z.y||0));
       if(dd<dist){dist=dd;target={kind:"player",uid,p,x:Number(p.x||0),y:Number(p.y||0)}}
     }
+    for(const [npcId,npc] of activeNPCs){if(!activeNPCIds.has(npcId))continue;const dd=Math.hypot(Number(npc.x||0)-Number(z.x||0),Number(npc.y||0)-Number(z.y||0));if(dd<dist){dist=dd;target={kind:"npc",npcId,npc,x:Number(npc.x||0),y:Number(npc.y||0)}}}
     for(const entry of vehicleTargets){
       const vehicle=vehicles[entry.vehicleId];if(!vehicle||vehicle.destroyed||Number(vehicle.health||0)<=0)continue;
       const dd=Math.hypot(Number(vehicle.x||0)-Number(z.x||0),Number(vehicle.y||0)-Number(z.y||0));
@@ -3136,6 +3309,7 @@ async function updateZombies(d){
         const hasAnotherHuman=activeHumanIds.size>=1;
         const shouldTransform=startedCount<=1||hasAnotherHuman;
         appendPlayerInventoryDrops(target.uid,target.p,structures,updates,deathMoment,shouldTransform?["syringe"]:[]);
+        appendPlayerClanDeath(target.uid,target.p,updates);
         updates[`players/${target.uid}/alive`]=false;
         updates[`players/${target.uid}/moving`]=false;
         updates[`players/${target.uid}/vx`]=0;
@@ -3145,10 +3319,12 @@ async function updateZombies(d){
         updates[`players/${target.uid}/zombieTransformStartedAt`]=shouldTransform?deathMoment:null;
         updates[`players/${target.uid}/akFiring`]=false
       }
+    }else if(target.kind==="npc"&&dist<35&&!blocker&&activeNPCIds.has(target.npcId)&&Date.now()-Number(z.lastAttack||0)>900){
+      const attackNow=Date.now();z.lastAttack=attackNow;updates[`zombies/${zid}/lastAttack`]=attackNow;const currentHp=healthByNPCId.get(target.npcId)??Number(target.npc.health||100),hp=Math.max(0,currentHp-d.damage);healthByNPCId.set(target.npcId,hp);target.npc.health=hp;target.npc.lastAttackerType="zombie";target.npc.lastAttackerId=zid;target.npc.lastAttackedAt=attackNow;updates[`npcs/${target.npcId}/health`]=hp;updates[`npcs/${target.npcId}/attackedAt`]=attackNow;updates[`npcs/${target.npcId}/lastAttackerType`]="zombie";updates[`npcs/${target.npcId}/lastAttackerId`]=zid;updates[`npcs/${target.npcId}/lastAttackedAt`]=attackNow;if(hp<=0){activeNPCIds.delete(target.npcId);appendNPCDeath(target.npcId,target.npc,updates,"zombie",zid,attackNow)}
     }
   }
 
-  if(activeHumanIds.size===0&&startedCount>1){
+  if(activeHumanIds.size===0&&activeNPCIds.size===0&&Number(state.room?.startedSurvivorCount||startedCount)>1){
     state.ending=true;
     updates.status="ended";
     updates.winner="survivors";
@@ -3167,8 +3343,8 @@ async function finishRound(){
     const snapshot=await state.roomRef.child("players").once("value");
     const players=snapshot.val()||{};
     const survivorEntries=Object.entries(players).filter(([,player])=>player&&player.alive!==false&&player.isZombie!==true);
-    const survivorIds=survivorEntries.map(([uid])=>uid);
-    const survivors=survivorEntries.map(([,player])=>player.name).filter(Boolean);
+    const npcSnapshot=await state.roomRef.child("npcs").once("value"),npcs=npcSnapshot.val()||{},npcSurvivors=Object.entries(npcs).filter(([,npc])=>npc&&npc.alive!==false),survivorIds=[...survivorEntries.map(([uid])=>`player:${uid}`),...npcSurvivors.map(([id])=>`npc:${id}`)];
+    const survivors=[...survivorEntries.map(([,player])=>player.name).filter(Boolean),...npcSurvivors.map(([id,npc])=>npc.name||`NPC #${String(id).replace(/\D/g,"")||id}`)];
     await state.roomRef.update({status:"ended",winner:"survivors",survivors,survivorIds,endedAt:serverTime()})
   }catch(error){
     state.ending=false;
@@ -3403,7 +3579,7 @@ function rayRectDistance(originX,originY,dirX,dirY,box,maxDistance=AK_RANGE,padd
   }
   return near>=0&&near<=maxDistance?near:null
 }
-function akFirstHitForEvent(event,players,zombies,structures,vehicles){
+function akFirstHitForEvent(event,players,zombies,structures,vehicles,npcs=state.npcs||{}){
   const attacker=players?.[event?.attackerId];if(!attacker)return null;
   const originX=Number(event.x??attacker.x??0),originY=Number(event.y??attacker.y??0),dir=normalizeAkDirection(Number(event.dirX??attacker.attackDirX??attacker.facing??1),Number(event.dirY??attacker.attackDirY??0),Number(event.facing??attacker.facing??1)),range=Math.max(80,Math.min(AK_RANGE,Number(event.range||AK_RANGE))),hits=[];
   const boundaryDistance=rayMapBoundaryDistance(originX,originY,dir.x,dir.y,range);if(boundaryDistance!==null)hits.push({kind:"blocker",id:null,distance:boundaryDistance});
@@ -3421,9 +3597,10 @@ function akFirstHitForEvent(event,players,zombies,structures,vehicles){
     const distance=rayCircleDistance(originX,originY,dir.x,dir.y,Number(zombie.x||0),Number(zombie.y||0),20,range);if(distance!==null)hits.push({kind:"zombie",id,distance})
   }
   for(const [uid,player] of Object.entries(players||{})){
-    if(uid===event.attackerId||!player||player.alive===false||player.isZombie===true||player.vehicleId||vehicleOccupants.has(uid))continue;
+    if(uid===event.attackerId||!player||player.alive===false||player.isZombie===true||player.vehicleId||vehicleOccupants.has(uid)||event.attackerType!=="npc"&&!playerMayDamagePlayer(event.attackerId,uid))continue;
     const distance=rayCircleDistance(originX,originY,dir.x,dir.y,Number(player.x||0),Number(player.y||0),16,range);if(distance!==null)hits.push({kind:"player",id:uid,distance})
   }
+  for(const [id,npc] of Object.entries(npcs||{})){if(!npc||npc.alive===false||event.attackerType==="npc"&&id===event.attackerId||event.attackerType!=="npc"&&!playerMayDamageNPC(event.attackerId,id))continue;const distance=rayCircleDistance(originX,originY,dir.x,dir.y,Number(npc.x||0),Number(npc.y||0),16,range);if(distance!==null)hits.push({kind:"npc",id,distance})}
   hits.sort((a,b)=>a.distance-b.distance);return hits[0]||null
 }
 function akAimAssistCandidates(){
@@ -3433,14 +3610,15 @@ function akAimAssistCandidates(){
     candidates.push({kind:"zombie",id,x:Number(zombie.x||0),y:Number(zombie.y||0),priority:0})
   }
   for(const [id,player] of Object.entries(state.players||{})){
-    if(id===state.uid||!player||player.alive===false||player.isZombie===true||player.vehicleId||vehicleOccupants.has(id))continue;
+    if(id===state.uid||!player||player.alive===false||player.isZombie===true||player.vehicleId||vehicleOccupants.has(id)||!playerMayDamagePlayer(state.uid,id))continue;
     candidates.push({kind:"player",id,x:Number(player.x||0),y:Number(player.y||0),priority:.025})
   }
+  for(const [id,npc] of Object.entries(state.npcs||{})){if(!npc||npc.alive===false||!playerMayDamageNPC(state.uid,id))continue;candidates.push({kind:"npc",id,x:Number(npc.x||0),y:Number(npc.y||0),priority:.02})}
   return candidates
 }
 function akAimAssistLineIsClear(candidate,targetDirection){
   const event={attackerId:state.uid,x:state.localX,y:state.localY,dirX:targetDirection.x,dirY:targetDirection.y,range:AK_RANGE,facing:targetDirection.x<0?-1:1};
-  const hit=akFirstHitForEvent(event,state.players||{},state.room?.zombies||{},state.room?.structures||{},state.room?.vehicles||{});
+  const hit=akFirstHitForEvent(event,state.players||{},state.room?.zombies||{},state.room?.structures||{},state.room?.vehicles||{},state.npcs||{});
   return!!(hit&&hit.kind===candidate.kind&&String(hit.id)===String(candidate.id))
 }
 function assistedAkDirection(rawDirection,now=Date.now()){
@@ -3464,7 +3642,7 @@ function assistedAkDirection(rawDirection,now=Date.now()){
 function queueAkBulletVisual(id,event){
   if(!id||!event||state.seenAttackVisualIds.has(id))return;state.seenAttackVisualIds.add(id);
   if(state.seenAttackVisualIds.size>480){const keep=id;state.seenAttackVisualIds.clear();state.seenAttackVisualIds.add(keep)}
-  const originX=Number(event.x||0),originY=Number(event.y||0),attacker=state.players?.[event.attackerId],dir=normalizeAkDirection(Number(event.dirX||1),Number(event.dirY||0),Number(event.facing??attacker?.facing??1)),facing=Number(event.facing??attacker?.facing??(dir.x<0?-1:1))<0?-1:1,hit=akFirstHitForEvent(event,state.players||{},state.room?.zombies||{},state.room?.structures||{},state.room?.vehicles||{}),distance=Math.max(24,Math.min(AK_RANGE,Number(hit?.distance??event.range??AK_RANGE)));
+  const originX=Number(event.x||0),originY=Number(event.y||0),attacker=event.attackerType==="npc"?state.npcs?.[event.attackerId]:state.players?.[event.attackerId],dir=normalizeAkDirection(Number(event.dirX||1),Number(event.dirY||0),Number(event.facing??attacker?.facing??1)),facing=Number(event.facing??attacker?.facing??(dir.x<0?-1:1))<0?-1:1,hit=event.visualOnly?null:akFirstHitForEvent(event,state.players||{},state.room?.zombies||{},state.room?.structures||{},state.room?.vehicles||{},state.npcs||{}),distance=Math.max(24,Math.min(AK_RANGE,Number(hit?.distance??event.range??AK_RANGE)));
   state.bulletVisuals.push({id,x:originX,y:originY,dirX:dir.x,dirY:dir.y,facing,distance,startedAt:performance.now()});if(state.bulletVisuals.length>80)state.bulletVisuals.splice(0,state.bulletVisuals.length-80)
 }
 function drawAkBulletVisuals(ctx,now=performance.now()){
@@ -3490,7 +3668,7 @@ function aimPriorityCircle(aimX,aimY,targetX,targetY,radius){
   const distance=Math.hypot(aimX-targetX,aimY-targetY);
   return distance<=radius?3:distance<=radius+10?2:0
 }
-function axeTargetsForEvent(event,players,zombies,structures,vehicles){
+function axeTargetsForEvent(event,players,zombies,structures,vehicles,npcs=state.npcs||{}){
   const attacker=players[event.attackerId];if(!attacker)return[];
   const originX=Number(event.x??attacker.x??0),originY=Number(event.y??attacker.y??0),dir=normalizeDirection(Number(event.dirX??attacker.attackDirX??attacker.facing??1),Number(event.dirY??attacker.attackDirY??0));
   const rawAimX=event.aimX,rawAimY=event.aimY,hasAim=rawAimX!==null&&rawAimX!==undefined&&rawAimY!==null&&rawAimY!==undefined&&Number.isFinite(Number(rawAimX))&&Number.isFinite(Number(rawAimY)),aimX=hasAim?Number(rawAimX):NaN,aimY=hasAim?Number(rawAimY):NaN;
@@ -3502,11 +3680,12 @@ function axeTargetsForEvent(event,players,zombies,structures,vehicles){
     if(hit||aimPriority)targets.push({kind:"zombie",id,distance:Math.hypot(x-originX,y-originY),aimPriority})
   }
   for(const [uid,player] of Object.entries(players)){
-    if(uid===event.attackerId||!player||player.alive===false||player.isZombie===true||player.vehicleId||vehicleOccupants.has(uid))continue;
+    if(uid===event.attackerId||!player||player.alive===false||player.isZombie===true||player.vehicleId||vehicleOccupants.has(uid)||event.attackerType!=="npc"&&!playerMayDamagePlayer(event.attackerId,uid))continue;
     const x=Number(player.x||0),y=Number(player.y||0),hit=axeSweepHit(originX,originY,dir.x,dir.y,x,y,20);
     const aimPriority=hasAim&&Math.hypot(x-originX,y-originY)<=AXE_RANGE+24?aimPriorityCircle(aimX,aimY,x,y,20):0;
     if(hit||aimPriority)targets.push({kind:"player",id:uid,distance:Math.hypot(x-originX,y-originY),aimPriority})
   }
+  for(const [id,npc] of Object.entries(npcs||{})){if(!npc||npc.alive===false||event.attackerType==="npc"&&id===event.attackerId||event.attackerType!=="npc"&&!playerMayDamageNPC(event.attackerId,id))continue;const x=Number(npc.x||0),y=Number(npc.y||0),hit=axeSweepHit(originX,originY,dir.x,dir.y,x,y,20),aimPriority=hasAim&&Math.hypot(x-originX,y-originY)<=AXE_RANGE+24?aimPriorityCircle(aimX,aimY,x,y,20):0;if(hit||aimPriority)targets.push({kind:"npc",id,distance:Math.hypot(x-originX,y-originY),aimPriority})}
   for(const [id,vehicle] of Object.entries(vehicles||{})){
     if(!vehicle||vehicle.destroyed||Number(vehicle.health||0)<=0)continue;
     const x=Number(vehicle.x||0),y=Number(vehicle.y||0),hit=axeSweepHit(originX,originY,dir.x,dir.y,x,y,46),radialDistance=Math.hypot(x-originX,y-originY);
@@ -3559,6 +3738,7 @@ async function processAttackEvents(){
   state.processingAttacks=true;
   try{
     const players=Object.fromEntries(Object.entries(state.players||{}).map(([id,player])=>[id,{...player}]));
+    const npcs=Object.fromEntries(Object.entries(state.npcs||{}).map(([id,npc])=>[id,{...npc,weapons:{...(npc.weapons||{})},resources:{...(npc.resources||{})}}]));
     const zombies=Object.fromEntries(Object.entries(state.room?.zombies||{}).map(([id,zombie])=>[id,{...zombie}]));
     const structures=Object.fromEntries(Object.entries(state.room?.structures||{}).map(([id,structure])=>[id,{...structure}]));
     const vehicles=Object.fromEntries(Object.entries(state.room?.vehicles||{}).map(([id,vehicle])=>[id,{...vehicle}]));
@@ -3566,6 +3746,7 @@ async function processAttackEvents(){
     for(const [eventId,event] of entries){
       updates[`attackEvents/${eventId}`]=null;if(state.room.attackEvents)delete state.room.attackEvents[eventId];
       const attacker=players[event?.attackerId],weapon=event?.weapon,isAxe=weapon==="axe",isKatana=weapon==="katana",isMelee=isAxe||isKatana,isAk=weapon==="ak";
+      if(event?.visualOnly)continue;
       if(!isMelee&&!isAk)continue;
       const eventAt=Number(event?.at||now),duration=isMelee?Math.max(400,Number(event?.attackDuration||meleeAttackDuration(weapon))):AK_FIRE_INTERVAL,impactRatio=Number(event?.impactRatio??AXE_IMPACT_RATIO),sequence=Number(event?.sequence||0),eventAge=now-eventAt;
       // Usa o timestamp do servidor. Relógios diferentes entre celulares não
@@ -3580,7 +3761,7 @@ async function processAttackEvents(){
       if(sequence&&sequence<=Number(previous.sequence||0))continue;
       if(eventAt-Number(previous.at||0)<minimumCooldown-(isMelee?80:45))continue;
       state.attackCooldowns[cooldownKey]={at:eventAt,sequence};
-      const firstAkHit=isAk?akFirstHitForEvent(event,players,zombies,structures,vehicles):null,targets=isMelee?axeTargetsForEvent(event,players,zombies,structures,vehicles):firstAkHit?[firstAkHit]:[];
+      const firstAkHit=isAk?akFirstHitForEvent(event,players,zombies,structures,vehicles,npcs):null,targets=isMelee?axeTargetsForEvent(event,players,zombies,structures,vehicles,npcs):firstAkHit?[firstAkHit]:[];
       const damage=isKatana?{zombie:KATANA_ZOMBIE_DAMAGE,structure:KATANA_STRUCTURE_DAMAGE,vehicle:KATANA_VEHICLE_DAMAGE,player:KATANA_PLAYER_DAMAGE,knockback:AXE_KNOCKBACK}:isAxe?{zombie:AXE_ZOMBIE_DAMAGE,structure:AXE_STRUCTURE_DAMAGE,vehicle:AXE_VEHICLE_DAMAGE,player:AXE_PLAYER_DAMAGE,knockback:AXE_KNOCKBACK}:{zombie:AK_ZOMBIE_DAMAGE,structure:AK_STRUCTURE_DAMAGE,vehicle:AK_VEHICLE_DAMAGE,player:AK_PLAYER_DAMAGE,knockback:AK_KNOCKBACK};
       if(!targets.length)continue;
       for(const target of targets){
@@ -3608,7 +3789,9 @@ async function processAttackEvents(){
           const pushed=knockedBackEntityPosition(player,event,structures,13,damage.knockback),health=Math.max(0,Number(player.health??100)-damage.player),knockbackDuration=knockbackTweenDuration(Math.hypot(pushed.x-Number(player.x||0),pushed.y-Number(player.y||0)));
           player.health=health;player.x=pushed.x;player.y=pushed.y;player.vx=0;player.vy=0;player.moving=false;player.attackedAt=now;player.knockbackAt=now;player.knockbackX=pushed.x;player.knockbackY=pushed.y;player.knockbackDuration=knockbackDuration;
           updates[`players/${target.id}/health`]=health;updates[`players/${target.id}/x`]=pushed.x;updates[`players/${target.id}/y`]=pushed.y;updates[`players/${target.id}/vx`]=0;updates[`players/${target.id}/vy`]=0;updates[`players/${target.id}/moving`]=false;updates[`players/${target.id}/attackedAt`]=now;updates[`players/${target.id}/knockbackAt`]=now;updates[`players/${target.id}/knockbackX`]=pushed.x;updates[`players/${target.id}/knockbackY`]=pushed.y;updates[`players/${target.id}/knockbackDuration`]=knockbackDuration;
-          if(health<=0){player.alive=false;player.isZombie=false;appendPlayerInventoryDrops(target.id,player,structures,updates,now);updates[`players/${target.id}/alive`]=false;updates[`players/${target.id}/isZombie`]=false;updates[`players/${target.id}/zombieTransformStartedAt`]=null;updates[`players/${target.id}/moving`]=false;updates[`players/${target.id}/vx`]=0;updates[`players/${target.id}/vy`]=0;updates[`players/${target.id}/akFiring`]=false;updates[`players/${target.id}/deathCause`]="player";updates[`players/${target.id}/killedBy`]=event.attackerId}
+          if(health<=0){player.alive=false;player.isZombie=false;appendPlayerInventoryDrops(target.id,player,structures,updates,now);appendPlayerClanDeath(target.id,player,updates);updates[`players/${target.id}/alive`]=false;updates[`players/${target.id}/isZombie`]=false;updates[`players/${target.id}/zombieTransformStartedAt`]=null;updates[`players/${target.id}/moving`]=false;updates[`players/${target.id}/vx`]=0;updates[`players/${target.id}/vy`]=0;updates[`players/${target.id}/akFiring`]=false;updates[`players/${target.id}/deathCause`]="player";updates[`players/${target.id}/killedBy`]=event.attackerId}
+        }else if(target.kind==="npc"){
+          const npc=npcs[target.id];if(!npc||npc.alive===false||!playerMayDamageNPC(event.attackerId,target.id))continue;const pushed=knockedBackEntityPosition(npc,event,structures,NPC_RADIUS,damage.knockback),health=Math.max(0,Number(npc.health??100)-damage.player),knockbackDuration=knockbackTweenDuration(Math.hypot(pushed.x-Number(npc.x||0),pushed.y-Number(npc.y||0)));npc.health=health;npc.x=pushed.x;npc.y=pushed.y;npc.vx=0;npc.vy=0;npc.moving=false;npc.attackedAt=now;npc.knockbackAt=now;npc.knockbackX=pushed.x;npc.knockbackY=pushed.y;npc.knockbackDuration=knockbackDuration;npc.lastAttackerType="player";npc.lastAttackerId=event.attackerId;npc.lastAttackedAt=now;updates[`npcs/${target.id}/health`]=health;updates[`npcs/${target.id}/x`]=pushed.x;updates[`npcs/${target.id}/y`]=pushed.y;updates[`npcs/${target.id}/vx`]=0;updates[`npcs/${target.id}/vy`]=0;updates[`npcs/${target.id}/moving`]=false;updates[`npcs/${target.id}/attackedAt`]=now;updates[`npcs/${target.id}/knockbackAt`]=now;updates[`npcs/${target.id}/knockbackX`]=pushed.x;updates[`npcs/${target.id}/knockbackY`]=pushed.y;updates[`npcs/${target.id}/knockbackDuration`]=knockbackDuration;updates[`npcs/${target.id}/lastAttackerType`]="player";updates[`npcs/${target.id}/lastAttackerId`]=event.attackerId;updates[`npcs/${target.id}/lastAttackedAt`]=now;if(health<=0)appendNPCDeath(target.id,npc,updates,"player",event.attackerId,now)
         }
       }
     }
@@ -3870,7 +4053,7 @@ function updateHUD(){
   $("phaseLabel").textContent=phase==="day"?(transition.factor>.05?`◐ ANOITECENDO · ${day}/${total}`:`☀ DIA ${day}/${total}`):phase==="dawn"?`◑ AMANHECENDO · ${day}/${total}`:`☾ NOITE ${day}/${total}`;
   $("timerLabel").textContent=String(Math.floor(remain/60)).padStart(2,"0")+":"+String(remain%60).padStart(2,"0");
   $("healthBar").style.width=(isLocalZombie()?0:Math.max(0,Number(state.me?.health||0)))+"%";
-  const aliveCount=Object.values(state.players||{}).filter(p=>p.alive!==false&&!p.isZombie).length;
+  const alivePlayerCount=Object.values(state.players||{}).filter(p=>p.alive!==false&&!p.isZombie).length,npcAliveCount=Object.values(state.npcs||{}).filter(npc=>npc?.alive!==false).length,aliveCount=alivePlayerCount+npcAliveCount;
   const playerZombieCount=Object.values(state.players||{}).filter(p=>p.isZombie===true).length;
   const zombieCount=Object.keys(state.room?.zombies||{}).length+playerZombieCount;
   $("aliveCountLabel").textContent=aliveCount+" "+(aliveCount===1?"vivo":"vivos");
@@ -3890,11 +4073,12 @@ function updateHUD(){
   $("rotateBuildBtn").classList.toggle("hidden",!canBuild||!state.selectedBuild||state.buildType!=="wall");
 
   const canInteract=(state.me?.alive!==false||isLocalZombie())&&!isPlayerTransforming(state.me),vehicleAction=canInteract?nearestVehicleInteraction():null;
-  const door=canInteract&&!vehicleAction?nearestDoor():null,interaction=vehicleAction||door;
+  const npcAction=canInteract&&!vehicleAction&&!isLocalZombie()?nearestConversableNPC():null,door=canInteract&&!vehicleAction&&!npcAction?nearestDoor():null,interaction=vehicleAction||npcAction||door;
   $("interactBtn").classList.toggle("hidden",!interaction);$("interactBtn").disabled=!interaction;
   if(vehicleAction?.type==="exitVehicle")$("interactBtn").textContent="Descer";
   else if(vehicleAction?.type==="driver")$("interactBtn").textContent="Dirigir";
   else if(vehicleAction?.type==="passenger")$("interactBtn").textContent="Entrar";
+  else if(npcAction)$("interactBtn").textContent="Conversar";
   else $("interactBtn").textContent=door?(door.s.open?"Fechar porta":"Abrir porta"):"Interagir"
 }
 let cachedMobileLike=null;
@@ -3954,6 +4138,10 @@ function draw(now=performance.now()){
     const y=uid===state.uid?state.localY:Number(v?.y??p.y);
     if(visiblePoint(x,y,150))renderQueue.push({y:y+8,type:"player",value:{uid,x,y,p:{...p,visualMoving:uid===state.uid?state.localMoving:(v?.moving??p.moving),visualAttackedAt:uid===state.uid?state.localDamageFlashAt:Number(v?.damageFlashAt||0),visualKnockback:uid===state.uid?state.localKnockback:v?.knockback},me:uid===state.uid}});
   }
+  for(const [id,npc] of Object.entries(state.npcs||{})){
+    if(!npc||npc.alive===false)continue;const v=state.npcVisuals?.[id],x=Number(v?.x??npc.x),y=Number(v?.y??npc.y);
+    if(visiblePoint(x,y,150))renderQueue.push({y:y+8,type:"npc",value:{id,x,y,p:{...npc,visualMoving:v?.moving??npc.moving,visualAttackedAt:Number(v?.damageFlashAt||0),visualKnockback:v?.knockback}}})
+  }
   for(const [id,z] of Object.entries(state.room?.zombies||{})){
     const v=state.zombieVisuals[id];
     const zz={...z,x:Number(v?.x??z.x),y:Number(v?.y??z.y),moving:!!v?.moving,facing:Number(v?.facing||1),visualAttackStartedAt:Number(v?.attackStartedAt||0),visualAttackedAt:Number(v?.damageFlashAt||0),visualKnockback:v?.knockback};
@@ -3968,6 +4156,7 @@ function draw(now=performance.now()){
     if(item.type==="structure")drawStructure(ctx,item.value);
     else if(item.type==="vehicle")drawVehicle(ctx,item.value);
     else if(item.type==="player")drawPlayer(ctx,item.value.x,item.value.y,item.value.p,item.value.me,item.value.uid);
+    else if(item.type==="npc")drawPlayer(ctx,item.value.x,item.value.y,item.value.p,false,item.value.id,{npc:true,outlineColor:item.value.p.outlineColor,showName:!!item.value.p.name});
     else if(item.type==="zombieCorpse")drawZombieCorpse(ctx,item.value,now);
     else drawZombie(ctx,item.value);
   }
@@ -3981,6 +4170,7 @@ function draw(now=performance.now()){
   drawUpgradeIcons(ctx,cam);
   drawSpeechBubbles(ctx,cam,now);
   drawPlayerRadar(ctx,cam);
+  drawNPCConversationPrompt(ctx,cam);
   if(state.me?.alive===false&&!isLocalZombie()){
     ctx.fillStyle="rgba(100,0,0,.22)";ctx.fillRect(0,0,cam.screenW,cam.screenH);
     ctx.fillStyle="white";ctx.font="900 28px system-ui";ctx.textAlign="center";
@@ -4165,7 +4355,10 @@ function drawAkOnBack(ctx,x,y,facing,flash=false){
   const sourceW=Math.max(1,Number(akPickupSprite.naturalWidth||akPickupSprite.width||1)),sourceH=Math.max(1,Number(akPickupSprite.naturalHeight||akPickupSprite.height||1)),scale=Math.min(58/sourceW,58/sourceH),drawW=sourceW*scale,drawH=sourceH*scale;
   ctx.save();ctx.translate(x,y-43);ctx.scale(facing,1);ctx.rotate(-.38);drawSpriteStable(ctx,akPickupSprite,-drawW/2,-drawH/2,drawW,drawH,{flash});ctx.restore()
 }
-function drawPlayer(ctx,x,y,p,me,uid){
+function drawOutlinedSpriteStable(ctx,source,x,y,w,h,color,effects={}){
+  if(!color)return drawSpriteStable(ctx,source,x,y,w,h,effects);ctx.save();const radius=Math.max(1.6,Math.min(3.2,Math.abs(h)/34));ctx.filter=`drop-shadow(${radius}px 0 0 ${color}) drop-shadow(${-radius}px 0 0 ${color}) drop-shadow(0 ${radius}px 0 ${color}) drop-shadow(0 ${-radius}px 0 ${color}) drop-shadow(${radius*.72}px ${radius*.72}px 0 ${color}) drop-shadow(${-radius*.72}px ${radius*.72}px 0 ${color}) drop-shadow(${radius*.72}px ${-radius*.72}px 0 ${color}) drop-shadow(${-radius*.72}px ${-radius*.72}px 0 ${color})`;drawSpriteStable(ctx,source,x,y,w,h,effects);ctx.restore()
+}
+function drawPlayer(ctx,x,y,p,me,uid,options={}){
   ctx.save();
   const marker=me?readZombieMarker():null;
   const isZombie=p.isZombie===true||!!(!Number(p.curedAt||0)&&marker&&Number(marker.roundStartedAt)===Number(state.room?.roundStartedAt));
@@ -4235,7 +4428,7 @@ function drawPlayer(ctx,x,y,p,me,uid){
     ctx.translate(x,y+12);
     ctx.rotate((akFiring?akTilt:0)+knockbackTilt);
     ctx.scale(facing,1);
-    drawSpriteStable(ctx,spriteSource,-drawW/2,-drawH,drawW,drawH,{flash:damageFlashing});
+    drawOutlinedSpriteStable(ctx,spriteSource,-drawW/2,-drawH,drawW,drawH,options.outlineColor,{flash:damageFlashing});
     ctx.restore()
   }else{
     ctx.save();ctx.translate(x,y+8);ctx.rotate(knockbackTilt);ctx.fillStyle=damageFlashing?"#e45151":(isZombie?"#708e59":(p.color||"#58c979"));ctx.fillRect(-13,-42,26,42);ctx.restore()
@@ -4249,15 +4442,8 @@ function drawPlayer(ctx,x,y,p,me,uid){
     ctx.stroke()
   }
 
-  ctx.font="700 12px system-ui";
-  ctx.textAlign="center";
-  ctx.lineWidth=3;
-  const nameY=y-drawH+8;
-  ctx.strokeStyle="rgba(0,0,0,.75)";
-  ctx.strokeText(p.name||"Jogador",x,nameY);
-  ctx.fillStyle="white";
-  ctx.fillText(p.name||"Jogador",x,nameY);
-  drawVoiceSpeakingIndicator(ctx,uid,x,nameY-17,14);
+  const shouldDrawName=options.showName!==false&&(!options.npc||!!p.name),nameY=y-drawH+8;
+  if(shouldDrawName){ctx.font="700 12px system-ui";ctx.textAlign="center";ctx.lineWidth=3;ctx.strokeStyle="rgba(0,0,0,.75)";ctx.strokeText(p.name||"Jogador",x,nameY);ctx.fillStyle="white";ctx.fillText(p.name||"Jogador",x,nameY);if(!options.npc)drawVoiceSpeakingIndicator(ctx,uid,x,nameY-17,14)}
   ctx.restore()
 }
 function drawWeaponDrop(ctx,drop){
@@ -4315,6 +4501,63 @@ function drawZombieCorpse(ctx,corpse,now=performance.now()){
   else{ctx.fillStyle="#566947";ctx.fillRect(-13,-50,26,50);ctx.fillStyle="#293425";ctx.fillRect(-17,-15,34,15)}
   ctx.restore()
 }
+
+async function reconcileClanState(now=Date.now()){
+  if(!state.host||now-Number(state.lastClanReconcile||0)<1000||!state.roomRef)return false;state.lastClanReconcile=now;const updates={},clans=state.clans||{},clanIds=new Set(Object.keys(clans));
+  for(const [clanId,clan] of Object.entries(clans)){
+    if(!clan)continue;const leader=actorRecord(clan.leaderType,clan.leaderId),validLeader=leader&&leader.clanId===clanId&&actorIsAlive(clan.leaderType,clan.leaderId,leader);
+    if(!validLeader){const successor=npcLeaderSuccessor(clanId,clan.leaderType,clan.leaderId);if(!successor){updates[`clans/${clanId}`]=null;for(const [uid,p] of Object.entries(state.players||{}))if(p?.clanId===clanId)updates[`players/${uid}/clanId`]=null;for(const [id,npc] of Object.entries(state.npcs||{}))if(npc?.clanId===clanId)updates[`npcs/${id}/clanId`]=null;continue}updates[`clans/${clanId}/leaderType`]=successor.kind;updates[`clans/${clanId}/leaderId`]=successor.id;updates[`clans/${clanId}/managerUid`]=successor.kind==="player"?successor.id:null}
+    const rivalValid=clan.rivalClanId&&clan.rivalClanId!==clanId&&clans[clan.rivalClanId];if(clan.peaceful===false&&!rivalValid){updates[`clans/${clanId}/peaceful`]=true;updates[`clans/${clanId}/rivalClanId`]=null}
+  }
+  for(const [uid,p] of Object.entries(state.players||{}))if(p?.clanId&&!clanIds.has(p.clanId))updates[`players/${uid}/clanId`]=null;
+  for(const [id,npc] of Object.entries(state.npcs||{}))if(npc?.clanId&&!clanIds.has(npc.clanId))updates[`npcs/${id}/clanId`]=null;
+  if(Object.keys(updates).length){await state.roomRef.update(updates);return true}return false
+}
+function localClanId(){return state.me?.clanId||null}
+function clanMembers(clanId){const members=[];for(const [uid,p] of Object.entries(state.players||{}))if(p?.clanId===clanId)members.push({kind:"player",id:uid,name:p.name||"Jogador",alive:actorIsAlive("player",uid,p)});for(const [id,npc] of Object.entries(state.npcs||{}))if(npc?.clanId===clanId)members.push({kind:"npc",id,name:npc.name||`NPC #${String(id).replace(/\D/g,"")||id}`,alive:npc.alive!==false});return members}
+function clanManagerCanAct(clan,uid=state.uid){const player=state.players?.[uid];return!!clan&&actorIsAlive("player",uid,player)&&(clan.leaderType==="player"&&clan.leaderId===uid||clan.managerUid===uid)}
+async function sendClanCommand(type,payload={}){if(!state.roomRef||state.room?.status!=="playing")return false;const key=state.roomRef.child("clanCommands").push().key;await state.roomRef.child(`clanCommands/${key}`).set({type,requesterId:state.uid,matchId:state.matchId,at:serverTime(),...payload});return true}
+async function processClanCommands(){
+  if(!state.host||state.processingClanCommands)return false;const entries=Object.entries(state.clanCommands||{}).sort((a,b)=>Number(a[1]?.at||0)-Number(b[1]?.at||0));if(!entries.length)return false;state.processingClanCommands=true;
+  try{for(const [commandId,command] of entries){const updates={[`clanCommands/${commandId}`]:null},requester=state.players?.[command?.requesterId],type=command?.type;if(!requester||command.matchId!==state.matchId){await state.roomRef.update(updates);continue}const requesterClanId=requester.clanId||null,clan=requesterClanId?state.clans?.[requesterClanId]:null;
+      if(type==="create"&&!requesterClanId){const name=clean(command.name,24);if(name&&!Object.values(state.clans||{}).some(item=>String(item?.name||"").toLowerCase()===name.toLowerCase())){const clanId=`clan_${String(commandId).replace(/[^a-zA-Z0-9_-]/g,"")}`;updates[`clans/${clanId}`]={id:clanId,name,leaderType:"player",leaderId:command.requesterId,managerUid:command.requesterId,peaceful:true,rivalClanId:null,followLeader:false,createdAt:serverTime(),matchId:state.matchId};updates[`players/${command.requesterId}/clanId`]=clanId}}
+      else if(type==="join"&&!requesterClanId&&state.clans?.[command.clanId])updates[`players/${command.requesterId}/clanId`]=command.clanId;
+      else if(clan&&clanManagerCanAct(clan,command.requesterId)){
+        if(type==="peaceful"){const others=Object.keys(state.clans||{}).filter(id=>id!==requesterClanId),peaceful=command.value!==false||!others.length;updates[`clans/${requesterClanId}/peaceful`]=peaceful;if(peaceful)updates[`clans/${requesterClanId}/rivalClanId`]=null;else updates[`clans/${requesterClanId}/rivalClanId`]=others.includes(command.rivalClanId)?command.rivalClanId:others[0]}
+        else if(type==="rival"){const valid=command.rivalClanId&&command.rivalClanId!==requesterClanId&&state.clans?.[command.rivalClanId];if(valid){updates[`clans/${requesterClanId}/peaceful`]=false;updates[`clans/${requesterClanId}/rivalClanId`]=command.rivalClanId}}
+        else if(type==="follow")updates[`clans/${requesterClanId}/followLeader`]=command.value===true;
+        else if(type==="transfer"){const target=actorRecord(command.targetKind,command.targetId);if(target?.clanId===requesterClanId&&actorIsAlive(command.targetKind,command.targetId,target)){updates[`clans/${requesterClanId}/leaderType`]=command.targetKind;updates[`clans/${requesterClanId}/leaderId`]=command.targetId;updates[`clans/${requesterClanId}/managerUid`]=command.targetKind==="player"?command.targetId:command.requesterId}}
+        else if(type==="rename"&&command.targetKind==="npc"){const target=state.npcs?.[command.targetId],name=clean(command.name,18);if(target?.clanId===requesterClanId&&name)updates[`npcs/${command.targetId}/name`]=name}
+        else if(type==="remove"){const target=actorRecord(command.targetKind,command.targetId);if(target?.clanId===requesterClanId){const isLeader=clan.leaderType===command.targetKind&&clan.leaderId===command.targetId,successor=isLeader?npcLeaderSuccessor(requesterClanId,command.targetKind,command.targetId):null;if(isLeader&&!successor)updates[`clans/${requesterClanId}`]=null;else if(isLeader){updates[`clans/${requesterClanId}/leaderType`]=successor.kind;updates[`clans/${requesterClanId}/leaderId`]=successor.id;if(successor.kind==="player")updates[`clans/${requesterClanId}/managerUid`]=successor.id}updates[`${command.targetKind==="npc"?"npcs":"players"}/${command.targetId}/clanId`]=null}}
+      }
+      await state.roomRef.update(updates)
+    }return true
+  }finally{state.processingClanCommands=false}
+}
+function renderClanEntryButtons(){const has=!!localClanId(),create=$("createClanBtn"),join=$("joinClanBtn");if(create)create.textContent=has?"Meu clã":"Criar clã";if(join)join.classList.toggle("hidden",has)}
+function openClanMenu(mode="mine"){state.clanMenuMode=mode;closeWeaponWheel();closeGameSettings();$("buildPicker")?.classList.add("hidden");$("clanOverlay")?.classList.remove("hidden");renderClanMenu()}
+function closeClanMenu(){$("clanOverlay")?.classList.add("hidden")}
+function renderClanMenu(){
+  const content=$("clanContent");if(!content)return;const clanId=localClanId(),clan=clanId?state.clans?.[clanId]:null,mode=state.clanMenuMode||"mine";
+  if(!clan&&mode==="create"){content.innerHTML=`<form id="createClanForm"><div class="field"><label>Nome do clã</label><input id="newClanName" class="input" maxlength="24" required /></div><button class="btn" type="submit">Criar clã</button></form>`;$("createClanForm").onsubmit=event=>{event.preventDefault();const name=clean($("newClanName").value,24);if(name)sendClanCommand("create",{name}).then(closeClanMenu)};return}
+  if(!clan){const clans=Object.entries(state.clans||{});content.innerHTML=clans.length?`<div class="clan-list">${clans.map(([id,item])=>`<div class="clan-card"><b>${escapeHtml(item.name||"Clã")}</b><div class="small">${clanMembers(id).length} membros</div><button class="btn secondary clan-join-choice" data-clan="${escapeHtml(id)}" style="margin-top:8px">Entrar</button></div>`).join("")}</div>`:`<div class="clan-empty">Nenhum clã criado nesta partida.</div>`;content.querySelectorAll(".clan-join-choice").forEach(button=>button.onclick=()=>sendClanCommand("join",{clanId:button.dataset.clan}).then(closeClanMenu));return}
+  const members=clanMembers(clanId),canManage=clanManagerCanAct(clan),otherClans=Object.entries(state.clans||{}).filter(([id])=>id!==clanId),leaderKey=`${clan.leaderType}:${clan.leaderId}`;$("clanTitle").textContent=clan.name||"Meu clã";
+  content.innerHTML=`<div class="clan-controls"><div class="row"><div class="field"><label>Pacíficos</label><select id="clanPeaceful" ${canManage?"":"disabled"}><option value="true" ${clan.peaceful!==false?"selected":""}>SIM</option><option value="false" ${clan.peaceful===false?"selected":""} ${otherClans.length?"":"disabled"}>NÃO</option></select></div><div class="field ${clan.peaceful!==false?"hidden":""}" id="rivalField"><label>Clã rival</label><select id="clanRival" ${canManage?"":"disabled"}>${otherClans.map(([id,item])=>`<option value="${escapeHtml(id)}" ${clan.rivalClanId===id?"selected":""}>${escapeHtml(item.name||"Clã")}</option>`).join("")}</select></div></div><div class="field"><label>Seguir líder</label><select id="clanFollow" ${canManage?"":"disabled"}><option value="true" ${clan.followLeader===true?"selected":""}>SIM</option><option value="false" ${clan.followLeader!==true?"selected":""}>NÃO</option></select></div></div><h3>Membros</h3><div class="clan-members">${members.map(member=>{const leader=`${member.kind}:${member.id}`===leaderKey;return`<div class="clan-member"><div><b>${escapeHtml(member.name)}</b> ${leader?'<span class="badge host">LÍDER</span>':""}<div class="small">${member.kind==="npc"?"NPC":"Jogador"}${member.alive?"":" · eliminado"}</div></div>${canManage?`<div class="clan-member-actions">${!leader?`<button class="mini-btn clan-transfer" data-kind="${member.kind}" data-id="${escapeHtml(member.id)}" data-name="${escapeHtml(member.name)}">Tornar líder</button>`:""}${member.kind==="npc"?`<button class="mini-btn clan-rename" data-id="${escapeHtml(member.id)}" data-name="${escapeHtml(member.name)}">Renomear</button>`:""}<button class="mini-btn danger clan-remove" data-kind="${member.kind}" data-id="${escapeHtml(member.id)}" data-name="${escapeHtml(member.name)}">Remover</button></div>`:""}</div>`}).join("")}</div>`;
+  const peaceful=$("clanPeaceful"),rival=$("clanRival"),follow=$("clanFollow");if(peaceful)peaceful.onchange=()=>sendClanCommand("peaceful",{value:peaceful.value==="true",rivalClanId:rival?.value||null});if(rival)rival.onchange=()=>sendClanCommand("rival",{rivalClanId:rival.value});if(follow)follow.onchange=()=>sendClanCommand("follow",{value:follow.value==="true"});content.querySelectorAll(".clan-transfer").forEach(button=>button.onclick=()=>{if(confirm(`Tornar ${button.dataset.name} líder do clã?`))sendClanCommand("transfer",{targetKind:button.dataset.kind,targetId:button.dataset.id})});content.querySelectorAll(".clan-remove").forEach(button=>button.onclick=()=>{if(confirm(`Remover ${button.dataset.name} do clã?`))sendClanCommand("remove",{targetKind:button.dataset.kind,targetId:button.dataset.id})});content.querySelectorAll(".clan-rename").forEach(button=>button.onclick=()=>{const name=prompt("Novo nome do NPC:",button.dataset.name||"");if(clean(name,18))sendClanCommand("rename",{targetKind:"npc",targetId:button.dataset.id,name:clean(name,18)})})
+}
+
+function nearestConversableNPC(maxDistance=NPC_INTERACTION_DISTANCE){let best=null,distance=Infinity;for(const [id,npc] of Object.entries(state.npcs||{})){if(!npc||npc.alive===false)continue;const d=Math.hypot(state.localX-Number(npc.x||0),state.localY-Number(npc.y||0));if(d<distance&&d<=maxDistance){distance=d;best={id,npc,distance}}}return best}
+function dialogueNormalize(text){return String(text||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9\s]/g," ").replace(/\s+/g," ").trim()}
+function dialogueIntent(text){const normalized=dialogueNormalize(text),words=new Set(normalized.split(" ").filter(Boolean)),invite=["entrar","entra","vir","vem","juntar","junta","participar","parte"].some(word=>words.has(word)),group=["cla","grupo","equipe","gente"].some(word=>words.has(word));if(invite&&group)return"recruit";if(normalized.includes("e ai")||["oi","ola","eai","ei","fala"].some(word=>words.has(word)))return"greeting";if(normalized.includes("tudo bem")||normalized.includes("como voce")||normalized.includes("como vai")||words.has("beleza"))return"status";if(normalized.includes("mandou bem")||normalized.includes("gostei de voce")||normalized.includes("voce e legal")||words.has("boa"))return"compliment";return"unknown"}
+function stableUnitRandom(seed){let hash=2166136261;for(const char of String(seed||"")){hash^=char.charCodeAt(0);hash=Math.imul(hash,16777619)}return(hash>>>0)/4294967296}
+function dialoguePick(list,seed=""){const unit=seed?stableUnitRandom(seed):Math.random();return list[Math.min(list.length-1,Math.floor(unit*list.length))]}
+function npcDialogueReply(npc,intent,player,seed=""){const mood=npc.mood||"NORMAL",sets={greeting:{ALEGRE:["Oi!","E aí!","Olá!","Fala!"],NORMAL:["Oi.","Olá.","E aí."],ZANGADO:["Que foi?","O que você quer?","Fala logo."]},status:{ALEGRE:["Tudo certo! E você?","Estou bem!","Melhor agora."],NORMAL:["Estou bem.","Tudo certo.","Vou levando."],ZANGADO:["Tô vivo.","Já estive melhor.","Por quê? "]},compliment:{ALEGRE:["Valeu! Você também!","Obrigado!","Que bom ouvir isso!"],NORMAL:["Obrigado.","Valeu.","Bom saber."],ZANGADO:["Tá.","Valeu.","Se você diz." ]},unknown:{ALEGRE:["Não entendi muito bem haha.","Depois a gente conversa."],NORMAL:["Não entendi.","Depois a gente se fala.","Sei não.","..."],ZANGADO:["Não entendi.","Fala direito.","Deixa pra lá.","..."]}};return dialoguePick(sets[intent]?.[mood]||sets.unknown[mood],seed)}
+async function openNPCDialogue(id){const npc=state.npcs?.[id];if(!npc||npc.alive===false||Math.hypot(state.localX-Number(npc.x),state.localY-Number(npc.y))>NPC_INTERACTION_DISTANCE||!state.roomRef)return false;stopGameplayKeys();closeWeaponWheel();closeGameSettings();const sessionId=`${state.uid}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`,ref=state.roomRef.child(`dialogueSessions/${id}`),now=Date.now(),result=await ref.transaction(current=>{if(current&&Number(current.expiresAt||0)>now&&current.playerId!==state.uid)return;return{npcId:id,playerId:state.uid,sessionId,matchId:state.matchId,startedAt:serverTime(),expiresAt:now+45000}},undefined,false);if(!result.committed){toast("Outro jogador já está conversando com este sobrevivente.");return false}state.activeDialogueNpcId=id;state.activeDialogueSessionId=sessionId;state.activeDialogueMessages=[];$("dialogueTitle").textContent=npc.name||"Sobrevivente";$("dialogueOverlay")?.classList.remove("hidden");refreshActiveDialogue();setTimeout(()=>$("dialogueInput")?.focus(),60);return true}
+async function closeNPCDialogue(message=""){const id=state.activeDialogueNpcId,sessionId=state.activeDialogueSessionId;if(message&&id)toast(message);state.activeDialogueNpcId=null;state.activeDialogueSessionId=null;state.activeDialogueMessages=[];$("dialogueOverlay")?.classList.add("hidden");if(id&&state.roomRef)state.roomRef.child(`dialogueSessions/${id}`).transaction(current=>current?.playerId===state.uid&&current?.sessionId===sessionId?null:current,undefined,false).catch(()=>{})}
+async function sendNPCDialogue(text){const npcId=state.activeDialogueNpcId,sessionId=state.activeDialogueSessionId,value=clean(text,100);if(!npcId||!sessionId||!value||state.dialogueBusy)return;state.dialogueBusy=true;try{const key=state.roomRef.child("dialogueRequests").push().key;await state.roomRef.update({[`dialogueRequests/${key}`]:{id:key,npcId,playerId:state.uid,sessionId,matchId:state.matchId,text:value,status:"queued",createdAt:serverTime()},[`dialogueSessions/${npcId}/expiresAt`]:Date.now()+45000});$("dialogueInput").value=""}finally{state.dialogueBusy=false;refreshActiveDialogue()}}
+function refreshActiveDialogue(){const npcId=state.activeDialogueNpcId,sessionId=state.activeDialogueSessionId,log=$("dialogueLog");if(!npcId||!sessionId||!log)return;const requests=Object.values(state.dialogueRequests||{}).filter(request=>request?.npcId===npcId&&request.playerId===state.uid&&request.sessionId===sessionId).sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0));log.innerHTML=requests.map(request=>`<div class="dialogue-line player">${escapeHtml(request.text)}</div>${request.response?`<div class="dialogue-line npc">${escapeHtml(request.response)}</div>`:""}`).join("");const thinking=requests.some(request=>!request.response);$("npcThinking")?.classList.toggle("hidden",!thinking);$("dialogueSendBtn").disabled=thinking;log.scrollTop=log.scrollHeight}
+async function processDialogueRequests(){if(!state.host||state.processingDialogueRequests)return false;const entries=Object.entries(state.dialogueRequests||{}).sort((a,b)=>Number(a[1]?.createdAt||0)-Number(b[1]?.createdAt||0));if(!entries.length)return false;state.processingDialogueRequests=true;try{for(const [requestId,request] of entries){if(request.matchId!==state.matchId||request.response)continue;const npc=state.npcs?.[request.npcId],player=state.players?.[request.playerId],session=state.dialogueSessions?.[request.npcId],seed=`${state.matchId}:${requestId}:${request.npcId}`;if(!npc||npc.alive===false||!player||session?.sessionId!==request.sessionId){await state.roomRef.update({[`dialogueRequests/${requestId}/response`]:"A conversa foi encerrada.",[`dialogueRequests/${requestId}/resolvedAt`]:serverTime()});continue}if(!request.dueAt){await state.roomRef.child(`dialogueRequests/${requestId}/dueAt`).set(Date.now()+1000+Math.floor(stableUnitRandom(seed+":delay")*1000));continue}if(Date.now()<Number(request.dueAt))continue;const intent=dialogueIntent(request.text),updates={},mood=npc.mood||"NORMAL";let response="";if(intent==="recruit"){const clanId=player.clanId,clan=clanId?state.clans?.[clanId]:null;if(!clan)response=dialoguePick(["Que clã?","Você nem tem um clã.","Cria um primeiro."],seed+":noclan");else if(npc.clanId)response=npc.clanId===clanId?"Eu já estou com vocês.":"Já faço parte de outro clã.";else{const chance=mood==="ALEGRE"?1:mood==="ZANGADO"?0.30:0.75,accepted=stableUnitRandom(seed+":accept")<chance;if(accepted){const accept={ALEGRE:["Claro!","Vamos!","Pode contar comigo!","Eu topo!"],NORMAL:["Certo.","Ok, vou entrar.","Beleza.","Eu entro."],ZANGADO:["Tá.","Beleza, eu vou.","Tá bom."]};response=dialoguePick(accept[mood],seed+":accepted");updates[`npcs/${request.npcId}/clanId`]=clanId;updates[`dialogueRequests/${requestId}/accepted`]=true}else{const refuse={ALEGRE:["Agora não, mas obrigado!","Prefiro continuar sozinho por enquanto."],NORMAL:["Agora não.","Prefiro ficar sozinho.","Não quero."],ZANGADO:["Tô fora.","Nem pensar.","Me deixa.","Não."]};response=dialoguePick(refuse[mood],seed+":refused");updates[`dialogueRequests/${requestId}/accepted`]=false}}}else response=npcDialogueReply(npc,intent,player,seed+":"+intent);updates[`dialogueRequests/${requestId}/intent`]=intent;updates[`dialogueRequests/${requestId}/response`]=response;updates[`dialogueRequests/${requestId}/resolvedAt`]=serverTime();await state.roomRef.update(updates)}return true}finally{state.processingDialogueRequests=false}}
+
 function gameChatText(value){return String(value||"").replace(/[\r\n\t]+/g," ").replace(/\s{2,}/g," ").trim().slice(0,GAME_CHAT_MAX_LENGTH)}
 function isTypingTarget(target){return!!target&&(target.tagName==="INPUT"||target.tagName==="TEXTAREA"||target.isContentEditable)}
 function stopGameplayKeys(){
@@ -4421,6 +4664,7 @@ function drawPlayerRadar(ctx,cam){
   }
   ctx.restore()
 }
+function drawNPCConversationPrompt(ctx,cam){const target=!isLocalZombie()&&!state.activeDialogueNpcId?nearestConversableNPC():null;if(!target)return;const visual=state.npcVisuals?.[target.id],x=Number(visual?.x??target.npc.x),y=Number(visual?.y??target.npc.y),sx=(x-cam.x)*cam.scale,sy=(y-102-cam.y)*cam.scale;ctx.save();ctx.setTransform(cam.d,0,0,cam.d,0,0);ctx.font="900 12px system-ui";const label="Conversar",width=ctx.measureText(label).width+22,height=29;ctx.fillStyle="rgba(9,15,10,.92)";ctx.strokeStyle=target.npc.outlineColor||"#ffd43b";ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(sx-width/2,sy-height/2,width,height,9);ctx.fill();ctx.stroke();ctx.fillStyle="#fff";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(label,sx,sy+.5);ctx.restore()}
 function renderInventory(){const r=state.me?.resources||{},g=$("inventoryGrid");g.innerHTML=`<div class="inventory-item"><b>Madeira</b><div>${r.wood||0}</div></div><div class="inventory-item"><b>Pedra</b><div>${r.stone||0}</div></div><div class="inventory-item"><b>Ferro</b><div>${r.metal||0}</div></div>`}
 function renderMessages(msgs){const box=$("lobbyMessages");box.innerHTML="";Object.values(msgs||{}).sort((a,b)=>(a.at||0)-(b.at||0)).forEach(m=>{const d=document.createElement("div");d.className="msg";d.innerHTML=m.system?`<i>${escapeHtml(m.text)}</i>`:`<b>${escapeHtml(m.name)}:</b> ${escapeHtml(m.text)}`;box.appendChild(d)});box.scrollTop=box.scrollHeight}async function sendChat(){const t=clean($("lobbyChatInput").value,120);if(!t)return;$("lobbyChatInput").value="";await state.roomRef.child("chat").push({name:state.name,text:t,at:serverTime()})}async function sendSystem(text){await state.roomRef.child("chat").push({system:true,text,at:serverTime()})}
 function resultList(value){
@@ -4429,13 +4673,13 @@ function resultList(value){
   return[]
 }
 function renderRoundResult(room=state.room||{}){
-  const players=room.players||state.players||{};
+  const players=room.players||state.players||{},npcs=room.npcs||state.npcs||{};
   const computedEntries=Object.entries(players).filter(([,player])=>player&&player.alive!==false&&player.isZombie!==true);
   const storedIds=resultList(room.survivorIds).map(String);
-  const survivorIds=storedIds.length?storedIds:computedEntries.map(([uid])=>uid);
+  const survivorIds=storedIds.length?storedIds:[...computedEntries.map(([uid])=>`player:${uid}`),...Object.entries(npcs).filter(([,npc])=>npc&&npc.alive!==false).map(([id])=>`npc:${id}`)];
   const storedNames=resultList(room.survivors).map(String).filter(Boolean);
-  const survivors=storedNames.length?storedNames:survivorIds.map(uid=>players[uid]?.name).filter(Boolean);
-  const localSurvived=survivorIds.includes(state.uid)||(!survivorIds.length&&storedNames.includes(state.name));
+  const survivors=storedNames.length?storedNames:survivorIds.map(value=>{const [kind,id]=value.includes(":")?value.split(/:(.+)/):["player",value];return kind==="npc"?(npcs[id]?.name||`NPC #${String(id).replace(/\D/g,"")||id}`):players[id]?.name}).filter(Boolean);
+  const localSurvived=survivorIds.includes(state.uid)||survivorIds.includes(`player:${state.uid}`)||(!survivorIds.length&&storedNames.includes(state.name));
   room.survivors=survivors;room.survivorIds=survivorIds;
   $("resultTitle").textContent=localSurvived?"VOCÊ SOBREVIVEU!":"FIM DA RODADA";
   $("resultText").textContent=survivors.length?"Sobreviventes: "+survivors.join(", "):"Ninguém sobreviveu à noite."
@@ -4469,8 +4713,8 @@ async function resetLobby(){
   try{
     const snapshot=await state.roomRef.child("players").once("value");
     const players=snapshot.val()||state.players||{};
-    const up={status:"lobby",countdownStartedAt:null,phase:null,phaseEndsAt:null,currentDay:null,startedPlayerCount:null,roundStartedAt:null,winner:null,survivors:null,survivorIds:null,endedAt:null,zombies:null,resources:null,weaponDrops:null,vehicles:null,vehicleMotion:null,structures:null,lastZombieSpawn:null,attackEvents:null,vehicleEvents:null,gameChat:null};
-    Object.keys(players).forEach(uid=>{up[`players/${uid}/assetsReady`]=true;up[`players/${uid}/ready`]=false;up[`players/${uid}/alive`]=true;up[`players/${uid}/isZombie`]=false;up[`players/${uid}/zombieTransformStartedAt`]=null;up[`players/${uid}/deathCause`]=null;up[`players/${uid}/health`]=100;up[`players/${uid}/equippedWeapon`]=null;up[`players/${uid}/weapons`]={axe:false,syringe:false,ak:false,katana:false};up[`players/${uid}/attackStartedAt`]=0;up[`players/${uid}/akFiring`]=false;up[`players/${uid}/akFireStartedAt`]=0;up[`players/${uid}/akShotAt`]=0;up[`players/${uid}/cureStartedAt`]=0;up[`players/${uid}/cureDuration`]=0;up[`players/${uid}/curedAt`]=0;up[`players/${uid}/attackedAt`]=0;up[`players/${uid}/knockbackAt`]=0;up[`players/${uid}/knockbackX`]=null;up[`players/${uid}/knockbackY`]=null;up[`players/${uid}/knockbackDuration`]=0;up[`players/${uid}/vehicleId`]=null;up[`players/${uid}/vehicleSeat`]=null;up[`players/${uid}/vehicleJoinedAt`]=0;up[`players/${uid}/vehicleExitAt`]=0});
+    const up={status:"lobby",countdownStartedAt:null,phase:null,phaseEndsAt:null,currentDay:null,startedPlayerCount:null,startedSurvivorCount:null,roundStartedAt:null,matchId:null,winner:null,survivors:null,survivorIds:null,endedAt:null,zombies:null,npcs:null,clans:null,clanCommands:null,dialogueSessions:null,dialogueRequests:null,bases:null,resources:null,weaponDrops:null,vehicles:null,vehicleMotion:null,structures:null,lastZombieSpawn:null,attackEvents:null,vehicleEvents:null,gameChat:null};
+    Object.keys(players).forEach(uid=>{up[`players/${uid}/assetsReady`]=true;up[`players/${uid}/ready`]=false;up[`players/${uid}/alive`]=true;up[`players/${uid}/isZombie`]=false;up[`players/${uid}/clanId`]=null;up[`players/${uid}/zombieTransformStartedAt`]=null;up[`players/${uid}/deathCause`]=null;up[`players/${uid}/health`]=100;up[`players/${uid}/equippedWeapon`]=null;up[`players/${uid}/weapons`]={axe:false,syringe:false,ak:false,katana:false};up[`players/${uid}/attackStartedAt`]=0;up[`players/${uid}/akFiring`]=false;up[`players/${uid}/akFireStartedAt`]=0;up[`players/${uid}/akShotAt`]=0;up[`players/${uid}/cureStartedAt`]=0;up[`players/${uid}/cureDuration`]=0;up[`players/${uid}/curedAt`]=0;up[`players/${uid}/attackedAt`]=0;up[`players/${uid}/knockbackAt`]=0;up[`players/${uid}/knockbackX`]=null;up[`players/${uid}/knockbackY`]=null;up[`players/${uid}/knockbackDuration`]=0;up[`players/${uid}/vehicleId`]=null;up[`players/${uid}/vehicleSeat`]=null;up[`players/${uid}/vehicleJoinedAt`]=0;up[`players/${uid}/vehicleExitAt`]=0});
     await state.roomRef.update(up)
   }catch(error){
     state.returningToLobby=false;$("backLobbyBtn").disabled=false;
@@ -4495,7 +4739,7 @@ async function leave(remove=true){
     if(remove&&state.playerRef)await state.playerRef.remove();
     if(remove&&state.host&&state.roomRef){const remaining=Object.entries(state.players||{}).filter(([uid,player])=>uid!==state.uid&&playerRealtimeActive(player)).sort((a,b)=>Number(a[1].joinedAt||0)-Number(b[1].joinedAt||0));if(remaining.length)await state.roomRef.child("hostId").set(remaining[0][0]);else await state.roomRef.remove()}
   }catch(e){}
-  state.roomCode=null;state.roomRef=null;state.playerRef=null;state.room=null;state.players={};state.me=null;state.lastKnownPlayer=null;state.playerMissing=false;state.membershipRecoveryPromise=null;state.presenceSessionId=null;state.presenceArmPromise=null;state.pageExitPrepared=false;state.vehicleVisuals={};state.vehicleMetadata={};state.zombieCorpses={};state.localVehicle=null;state.localVehicleId=null;state.resyncInFlight=false;state.lastRealtimeResync=0;state.lastVehicleOccupantSync=0;state.lobbyPositionRoom=null;state.lobbyRemote={};state.lobbyChatOpen=false;state.lobbySettingsOpen=false;state.skinShopOpen=false;state.skinShopHover=false;state.skinSelectionBusy=false;resetMatchTransitionVisuals();$("resultOverlay").classList.add("hidden");sw("home");state.leaving=false
+  state.roomCode=null;state.roomRef=null;state.playerRef=null;state.room=null;state.players={};state.npcs={};state.npcVisuals={};state.clans={};state.clanCommands={};state.dialogueSessions={};state.dialogueRequests={};state.matchId=null;state.firebaseConnected=false;state.me=null;state.lastKnownPlayer=null;state.playerMissing=false;state.membershipRecoveryPromise=null;state.presenceSessionId=null;state.presenceArmPromise=null;state.pageExitPrepared=false;state.vehicleVisuals={};state.vehicleMetadata={};state.zombieCorpses={};state.localVehicle=null;state.localVehicleId=null;state.resyncInFlight=false;state.lastRealtimeResync=0;state.lastVehicleOccupantSync=0;state.lobbyPositionRoom=null;state.lobbyRemote={};state.lobbyChatOpen=false;state.lobbySettingsOpen=false;state.skinShopOpen=false;state.skinShopHover=false;state.skinSelectionBusy=false;resetNPCBrainCache();closeClanMenu();closeNPCDialogue();resetMatchTransitionVisuals();$("resultOverlay").classList.add("hidden");sw("home");state.leaving=false
 }
 $("googleLoginBtn").onclick=loginGoogle;
 $("guestLoginBtn").onclick=loginGuest;
@@ -4524,7 +4768,7 @@ document.querySelectorAll(".skin-shop-option[data-skin]").forEach(button=>button
 $("loadingRetryBtn").onclick=()=>beginBootAssetStage(true);
 $("homeAssetRetryBtn").onclick=()=>beginHomeAssetStage(true);
 $("lobbyAssetRetryBtn").onclick=()=>beginLobbyAssetStage(true);
-["maxPlayers","playerSpeed","difficulty","dayDuration","nightDuration","totalDays","cameraZoom"].forEach(id=>$(id).onchange=saveSettings);
+["maxPlayers","playerSpeed","difficulty","dayDuration","nightDuration","totalDays","cameraZoom","npcsEnabled","npcCount"].forEach(id=>$(id).onchange=saveSettings);
 document.querySelectorAll(".stepper-btn").forEach(button=>button.onclick=()=>adjustNumericSetting(button.dataset.stepTarget,Number(button.dataset.step||0)));
 function bindGamePress(element,handler){
   if(!element)return;
@@ -4587,6 +4831,11 @@ function bindWeaponSlotDrag(button){
 bindGamePress($("interactBtn"),performInteraction);
 bindGamePress($("buildBtn"),()=>{if(state.me?.alive===false||isLocalZombie())return;closeWeaponWheel();closeGameSettings();if(state.selectedBuild){setBuildMode(false);$("buildPicker").classList.add("hidden")}else $("buildPicker").classList.toggle("hidden")});
 bindGamePress($("closeBuildPickerBtn"),()=>$("buildPicker").classList.add("hidden"));
+bindGamePress($("createClanBtn"),()=>openClanMenu(localClanId()?"mine":"create"));
+bindGamePress($("joinClanBtn"),()=>openClanMenu("join"));
+$("closeClanBtn").onclick=closeClanMenu;$("clanOverlay").onclick=event=>{if(event.target===$("clanOverlay"))closeClanMenu()};
+$("closeDialogueBtn").onclick=()=>closeNPCDialogue();$("dialogueOverlay").onclick=event=>{if(event.target===$("dialogueOverlay"))closeNPCDialogue()};
+$("dialogueForm").onsubmit=event=>{event.preventDefault();sendNPCDialogue($("dialogueInput").value)};
 document.querySelectorAll(".build-option").forEach(btn=>bindGamePress(btn,()=>{const type=btn.dataset.build;$("buildPicker").classList.add("hidden");setBuildMode(true,type)}));
 bindGamePress($("rotateBuildBtn"),rotateBuild);
 bindAttackControl($("attackBtn"));
@@ -4650,12 +4899,14 @@ function pointerHitsLocalPlayer(clientX,clientY){
   if(visual.facing<0)u=1-u;
   return spritePixelOpaque(visual.source,u,v)
 }
+function npcAtClientPoint(clientX,clientY){const world=clientPointToWorld(clientX,clientY);let best=null,distance=Infinity;for(const [id,npc] of Object.entries(state.npcs||{})){if(!npc||npc.alive===false)continue;const localDistance=Math.hypot(state.localX-Number(npc.x),state.localY-Number(npc.y));if(localDistance>NPC_INTERACTION_DISTANCE)continue;const hitDistance=Math.hypot(world.x-Number(npc.x),world.y-Number(npc.y-38));if(hitDistance<32&&hitDistance<distance){distance=hitDistance;best={id,npc}}}return best}
 gameCanvas.addEventListener("pointerdown",e=>{
   if(e.button!==undefined&&e.button!==0)return;
   const active=state.me&&(state.me.alive!==false||isLocalZombie());
   if(state.gameChatOpen||state.selectedBuild||state.weaponWheelOpen||!active||isPlayerTransforming(state.me)||isPlayerUsingSyringe(state.me,true))return;
   if(pointerHitsLocalPlayer(e.clientX,e.clientY)){e.preventDefault();openWeaponWheel();return}
   if(isLocalZombie())return;
+  const npcHit=npcAtClientPoint(e.clientX,e.clientY);if(npcHit){e.preventDefault();openNPCDialogue(npcHit.id);return}
   if(upgradeTargetAt(e.clientX,e.clientY))return;
   closeGameSettings();
   const world=clientPointToWorld(e.clientX,e.clientY);
