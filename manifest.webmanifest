@@ -1,0 +1,11 @@
+{
+  "name": "Coroadinho Zumbi Online",
+  "short_name": "Coroadinho",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "landscape",
+  "background_color": "#0d130f",
+  "theme_color": "#172018"
+}
